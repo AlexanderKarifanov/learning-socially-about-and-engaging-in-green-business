@@ -10,7 +10,7 @@ namespace Common.Entities
     {
         public Dictionary<Goal, GoalState> GoalsState { get; private set; }
 
-        public Dictionary<Site, KnowledgeHeuristicsHistory> HeuristicHistories { get; private set; }
+        public Dictionary<Site, DecisionOptionsHistory> DecisionOptionsHistories { get; private set; }
 
         public Dictionary<Site, List<TakenAction>> TakenActions { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Common.Entities
         {
             GoalsState = new Dictionary<Goal, GoalState>();
 
-            HeuristicHistories = new Dictionary<Site, KnowledgeHeuristicsHistory>();
+            DecisionOptionsHistories = new Dictionary<Site, DecisionOptionsHistory>();
 
             TakenActions = new Dictionary<Site, List<TakenAction>>();
         }
@@ -41,60 +41,60 @@ namespace Common.Entities
 
 
         /// <summary>
-        /// Creates agent state with one heuristic history. For not site oriented agents only.
+        /// Creates agent state with one decision option history. For not site oriented agents only.
         /// </summary>
         /// <param name="isSiteOriented"></param>
         /// <param name="history"></param>
         /// <returns></returns>
-        public static AgentState Create(bool isSiteOriented, KnowledgeHeuristicsHistory history)
+        public static AgentState Create(bool isSiteOriented, DecisionOptionsHistory history)
         {
             if (isSiteOriented)
                 throw new SosielAlgorithmException("Wrong AgentState.Create method usage");
 
             AgentState state = Create(isSiteOriented);
 
-            state.HeuristicHistories.Add(Site.DefaultSite, history); 
+            state.DecisionOptionsHistories.Add(Site.DefaultSite, history); 
 
             return state;
         }
 
         /// <summary>
-        /// Creates agent state with heuristic histories related to sites.
+        /// Creates agent state with decision option histories related to sites.
         /// </summary>
         /// <param name="isSiteOriented"></param>
         /// <param name="history"></param>
         /// <returns></returns>
-        public static AgentState Create(bool isSiteOriented, Dictionary<Site, KnowledgeHeuristicsHistory> history)
+        public static AgentState Create(bool isSiteOriented, Dictionary<Site, DecisionOptionsHistory> history)
         {
             AgentState state = Create(isSiteOriented);
 
-            state.HeuristicHistories = new Dictionary<Site, KnowledgeHeuristicsHistory>(history);
+            state.DecisionOptionsHistories = new Dictionary<Site, DecisionOptionsHistory>(history);
 
             return state;
         }
 
 
         /// <summary>
-        /// Adds heuristic history to list. Can be used for not site oriented agents.
+        /// Adds decision option history to list. Can be used for not site oriented agents.
         /// </summary>
         /// <param name="history"></param>
-        public void AddHeuristicHistory(KnowledgeHeuristicsHistory history)
+        public void AddDecisionOptionsHistory(DecisionOptionsHistory history)
         {
             if (IsSiteOriented)
-                throw new SosielAlgorithmException("Couldn't add heuristic history without site. It isn't possible for site oriented agents.");
+                throw new SosielAlgorithmException("Couldn't add decision options history without site. It isn't possible for site oriented agents.");
 
-            HeuristicHistories.Add(Site.DefaultSite, history);
+            DecisionOptionsHistories.Add(Site.DefaultSite, history);
         }
 
 
         /// <summary>
-        /// Adds heuristic history to list. Can be used for site oriented agents.
+        /// Adds decision options history to list. Can be used for site oriented agents.
         /// </summary>
         /// <param name="history"></param>
         /// <param name="site"></param>
-        public void AddHeuristicHistory(KnowledgeHeuristicsHistory history, Site site)
+        public void AddDecisionOptionsHistory(DecisionOptionsHistory history, Site site)
         {
-            HeuristicHistories.Add(site, history);
+            DecisionOptionsHistories.Add(site, history);
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace Common.Entities
                 agentState.GoalsState.Add(kvp.Key, kvp.Value.CreateForNextIteration());
             });
 
-            HeuristicHistories.Keys.ForEach(site =>
+            DecisionOptionsHistories.Keys.ForEach(site =>
             {
-                agentState.HeuristicHistories.Add(site, new KnowledgeHeuristicsHistory());
+                agentState.DecisionOptionsHistories.Add(site, new DecisionOptionsHistory());
             });
 
             return agentState;

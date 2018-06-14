@@ -1,4 +1,4 @@
-﻿namespace SHELite
+﻿namespace SOSIEL_EX1
 {
     public enum AgentSubtype
     {

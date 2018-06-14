@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Garry Sotnik")]
-[assembly: AssemblyProduct("ArtificialVCM")]
-[assembly: AssemblyCopyright("Copyright © Garry Sotnik 2017")]
+[assembly: AssemblyProduct("SOSIEL_EX1")]
+[assembly: AssemblyCopyright("Copyright © Garry Sotnik 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

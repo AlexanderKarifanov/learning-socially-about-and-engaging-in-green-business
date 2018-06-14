@@ -15,65 +15,64 @@ namespace Common.Processes
 
         Goal selectedGoal;
         GoalState selectedGoalState;
-        //HeuristicLayer layer;
-        Dictionary<KnowledgeHeuristic, Dictionary<Goal, double>> anticipatedInfluences;
+        Dictionary<DecisionOption, Dictionary<Goal, double>> anticipatedInfluences;
 
-        KnowledgeHeuristic[] matchedHeuristics;
-        KnowledgeHeuristic activatedHeuristic;
+        DecisionOption[] matchedDecisionOptions;
+        DecisionOption activatedDecisionOption;
 
         #region Specific logic for tendencies
         protected override void EqualToOrAboveFocalValue()
         {
-            KnowledgeHeuristic[] heuristics = anticipatedInfluences.Where(kvp=> matchedHeuristics.Contains(kvp.Key))
+            DecisionOption[] decisionOptions = anticipatedInfluences.Where(kvp => matchedDecisionOptions.Contains(kvp.Key))
                 .Where(kvp => kvp.Value[selectedGoal] >= 0 && kvp.Value[selectedGoal] > selectedGoalState.DiffCurrentAndFocal).Select(kvp => kvp.Key).ToArray();
 
-            //If 0 heuristics are identified, then heuristic-set-layer specific counterfactual thinking(t) = unsuccessful.
-            if (heuristics.Length == 0)
+            //If 0 decision options are identified, then counterfactual thinking(t) = unsuccessful.
+            if (decisionOptions.Length == 0)
             {
                 confidence = false;
             }
             else
             {
-                heuristics = heuristics.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
+                decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
 
-                confidence = heuristics.Any(r => !(r == activatedHeuristic || r.IsAction == false));
+                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
             }
         }
 
         protected override void EqualToOrBelowFocalValue()
         {
-            KnowledgeHeuristic[] heuristics = anticipatedInfluences.Where(kvp => matchedHeuristics.Contains(kvp.Key))
+            DecisionOption[] decisionOptions = anticipatedInfluences.Where(kvp => matchedDecisionOptions.Contains(kvp.Key))
                 .Where(kvp => kvp.Value[selectedGoal] < 0 && Math.Abs(kvp.Value[selectedGoal]) > Math.Abs(selectedGoalState.DiffCurrentAndFocal)).Select(kvp => kvp.Key).ToArray();
 
-            
-            //If 0 heuristics are identified, then heuristic-set-layer specific counterfactual thinking(t) = unsuccessful.
-            if (heuristics.Length == 0)
+
+            //If 0 decision options are identified, then counterfactual thinking(t) = unsuccessful.
+            if (decisionOptions.Length == 0)
             {
                 confidence = false;
             }
             else
             {
-                heuristics = heuristics.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
+                decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
 
-                confidence = heuristics.Any(r => !(r == activatedHeuristic || r.IsAction == false));
+                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
             }
         }
 
         protected override void Maximize()
         {
-            KnowledgeHeuristic[] heuristics = anticipatedInfluences.Where(kvp => matchedHeuristics.Contains(kvp.Key))
+            DecisionOption[] decisionOptions = anticipatedInfluences.Where(kvp => matchedDecisionOptions.Contains(kvp.Key))
                 .Where(kvp => kvp.Value[selectedGoal] >= 0).Select(kvp => kvp.Key).ToArray();
 
-            //If 0 heuristics are identified, then heuristic-set-layer specific counterfactual thinking(t) = unsuccessful.
-            if (heuristics.Length == 0)
+            //If 0 decision options are identified, then counterfactual thinking(t) = unsuccessful.
+            if (decisionOptions.Length == 0)
             {
                 confidence = false;
             }
             else
             {
-                heuristics = heuristics.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderByDescending(h => h.Key).First().ToArray();
+                decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderByDescending(h => h.Key).First().ToArray();
 
-                confidence = heuristics.Any(r => !(r == activatedHeuristic || r.IsAction == false));
+                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
             }
         }
 
@@ -95,7 +94,7 @@ namespace Common.Processes
         /// <param name="site"></param>
         /// <returns></returns>
         public bool Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Goal goal,
-            KnowledgeHeuristic[] matched, KnowledgeHeuristicsLayer layer, Site site)
+            DecisionOption[] matched, DecisionOptionLayer layer, Site site)
         {
             confidence = false;
 
@@ -106,14 +105,14 @@ namespace Common.Processes
 
             selectedGoalState = lastIteration.Value[agent].GoalsState[selectedGoal];
 
-            KnowledgeHeuristicsHistory history = priorIterationAgentState.HeuristicHistories[site];
+            DecisionOptionsHistory history = priorIterationAgentState.DecisionOptionsHistories[site];
 
 
-            activatedHeuristic = history.Activated.First(r => r.Layer == layer);
+            activatedDecisionOption = history.Activated.First(r => r.Layer == layer);
 
             anticipatedInfluences = agent.AnticipationInfluence;
 
-            matchedHeuristics = matched;
+            matchedDecisionOptions = matched;
 
             SpecificLogic(selectedGoal.Tendency);
 

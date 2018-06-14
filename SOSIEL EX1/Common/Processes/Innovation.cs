@@ -22,31 +22,31 @@ namespace Common.Processes
         /// <param name="goal"></param>
         /// <param name="layer"></param>
         public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Goal goal,
-            KnowledgeHeuristicsLayer layer, Site site)
+            DecisionOptionLayer layer, Site site)
         {
             Dictionary<IAgent, AgentState> currentIteration = lastIteration.Value;
             Dictionary<IAgent, AgentState> priorIteration = lastIteration.Previous.Value;
 
-            //gets prior period activated heuristic
-            KnowledgeHeuristicsHistory history = priorIteration[agent].HeuristicHistories[site];
-            KnowledgeHeuristic priorPeriodHeuristic = history.Activated.Single(r=>r.Layer == layer);
+            //gets prior period activated decision options
+            DecisionOptionsHistory history = priorIteration[agent].DecisionOptionsHistories[site];
+            DecisionOption priorPeriodDecisionOption = history.Activated.Single(r=>r.Layer == layer);
 
             LinkedListNode<Dictionary<IAgent, AgentState>> tempNode = lastIteration.Previous;
 
-            //if prior period heuristic is do nothing heuristic then looking for any do something heuristic
-            while (priorPeriodHeuristic.IsAction == false && tempNode.Previous != null)
+            //if prior period decision option is do nothing then looking for any do something decision option
+            while (priorPeriodDecisionOption.IsAction == false && tempNode.Previous != null)
             {
                 tempNode = tempNode.Previous;
 
-                history = tempNode.Value[agent].HeuristicHistories[site];
+                history = tempNode.Value[agent].DecisionOptionsHistories[site];
 
-                priorPeriodHeuristic = history.Activated.Single(r => r.Layer == layer);
+                priorPeriodDecisionOption = history.Activated.Single(r => r.Layer == layer);
             }
 
-            //if the layer or prior period heuristic are modifiable then generate new heuristic
-            if (layer.LayerConfiguration.Modifiable || (!layer.LayerConfiguration.Modifiable && priorPeriodHeuristic.IsModifiable))
+            //if the layer or prior period decision option are modifiable then generate new decision option
+            if (layer.LayerConfiguration.Modifiable || (!layer.LayerConfiguration.Modifiable && priorPeriodDecisionOption.IsModifiable))
             {
-                KnowledgeHeuristicsLayerConfiguration parameters = layer.LayerConfiguration;
+                DecisionOptionLayerConfiguration parameters = layer.LayerConfiguration;
 
                 Goal selectedGoal = goal;
 
@@ -56,9 +56,9 @@ namespace Common.Processes
                 double min = parameters.MinValue(agent);
                 double max = parameters.MaxValue(agent);
 
-                double consequentValue = string.IsNullOrEmpty(priorPeriodHeuristic.Consequent.VariableValue)
-                    ? priorPeriodHeuristic.Consequent.Value
-                    : agent[priorPeriodHeuristic.Consequent.VariableValue];
+                double consequentValue = string.IsNullOrEmpty(priorPeriodDecisionOption.Consequent.VariableValue)
+                    ? priorPeriodDecisionOption.Consequent.Value
+                    : agent[priorPeriodDecisionOption.Consequent.VariableValue];
 
                 double newConsequent = consequentValue;
 
@@ -66,7 +66,7 @@ namespace Common.Processes
                 {
                     case AnticipatedDirection.Up:
                         {
-                            if (KnowledgeHeuristicsLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Positive)
+                            if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Positive)
                             {
                                 if (consequentValue == max) return;
 
@@ -74,7 +74,7 @@ namespace Common.Processes
 
                                 newConsequent += (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
                             }
-                            if (KnowledgeHeuristicsLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
+                            if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
                             {
                                 if (consequentValue == min) return;
 
@@ -87,7 +87,7 @@ namespace Common.Processes
                         }
                     case AnticipatedDirection.Down:
                         {
-                            if (KnowledgeHeuristicsLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Positive)
+                            if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Positive)
                             {
                                 if (consequentValue == min) return;
 
@@ -95,7 +95,7 @@ namespace Common.Processes
 
                                 newConsequent -= (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
                             }
-                            if (KnowledgeHeuristicsLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
+                            if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
                             {
                                 if (consequentValue == max) return;
 
@@ -112,18 +112,18 @@ namespace Common.Processes
                         }
                 }
 
-                KnowledgeHeuristicConsequent consequent = KnowledgeHeuristicConsequent.Renew(priorPeriodHeuristic.Consequent, newConsequent);
+                DecisionOptionConsequent consequent = DecisionOptionConsequent.Renew(priorPeriodDecisionOption.Consequent, newConsequent);
                 #endregion
 
 
                 #region Generating antecedent
-                List<KnowledgeHeuristicAntecedentPart> antecedentList = new List<KnowledgeHeuristicAntecedentPart>(priorPeriodHeuristic.Antecedent.Length);
+                List<DecisionOptionAntecedentPart> antecedentList = new List<DecisionOptionAntecedentPart>(priorPeriodDecisionOption.Antecedent.Length);
 
-                foreach (KnowledgeHeuristicAntecedentPart antecedent in priorPeriodHeuristic.Antecedent)
+                foreach (DecisionOptionAntecedentPart antecedent in priorPeriodDecisionOption.Antecedent)
                 {
                     dynamic newConst = agent[antecedent.Param];
 
-                    KnowledgeHeuristicAntecedentPart newAntecedent = KnowledgeHeuristicAntecedentPart.Renew(antecedent, newConst);
+                    DecisionOptionAntecedentPart newAntecedent = DecisionOptionAntecedentPart.Renew(antecedent, newConst);
 
                     antecedentList.Add(newAntecedent);
                 }
@@ -131,10 +131,10 @@ namespace Common.Processes
 
                 AgentState agentState = currentIteration[agent];
 
-                KnowledgeHeuristic generatedHeuristic = KnowledgeHeuristic.Renew(priorPeriodHeuristic, antecedentList.ToArray(), consequent);
+                DecisionOption newDecisionOption = DecisionOption.Renew(priorPeriodDecisionOption, antecedentList.ToArray(), consequent);
 
 
-                //change base ai values for the new heuristic
+                //change base ai values for the new decision option
                 double consequentChangeProportion;
                 if (consequentValue == 0)
                 {
@@ -142,11 +142,11 @@ namespace Common.Processes
                 }
                 else
                 {
-                    consequentChangeProportion = Math.Abs(generatedHeuristic.Consequent.Value - consequentValue) / consequentValue;
+                    consequentChangeProportion = Math.Abs(newDecisionOption.Consequent.Value - consequentValue) / consequentValue;
                 }
 
                 
-                Dictionary<Goal, double> baseAI = agent.AnticipationInfluence[priorPeriodHeuristic];
+                Dictionary<Goal, double> baseAI = agent.AnticipationInfluence[priorPeriodDecisionOption];
 
                 Dictionary<Goal, double> proportionalAI = new Dictionary<Goal, double>();
 
@@ -156,7 +156,7 @@ namespace Common.Processes
                 {
                     double ai = baseAI[g];
 
-                    ConsequentRelationship relationship = KnowledgeHeuristicsLayerConfiguration.ConvertSign(priorPeriodHeuristic.Layer.LayerConfiguration.ConsequentRelationshipSign[g.Name]);
+                    ConsequentRelationship relationship = DecisionOptionLayerConfiguration.ConvertSign(priorPeriodDecisionOption.Layer.LayerConfiguration.ConsequentRelationshipSign[g.Name]);
 
                     double difference = Math.Abs(ai * consequentChangeProportion);
 
@@ -195,24 +195,24 @@ namespace Common.Processes
                 });
 
 
-                //add the generated heuristic to the prototype's mental model and assign one to the agent's mental model 
-                if (agent.Prototype.IsSimilarHeuristicExists(generatedHeuristic) == false)
+                //add the generated decision option to the prototype's mental model and assign one to the agent's mental model 
+                if (agent.Prototype.IsSimilarDecisionOptionExists(newDecisionOption) == false)
                 {
                     //add to the prototype and assign to current agent
-                    agent.AddHeuristic(generatedHeuristic, layer, proportionalAI);
+                    agent.AddDecisionOption(newDecisionOption, layer, proportionalAI);
                 }
-                else if (agent.AssignedKnowledgeHeuristics.Any(heuristic => heuristic == generatedHeuristic) == false)
+                else if (agent.AssignedDecisionOptions.Any(decisionOption => decisionOption == newDecisionOption) == false)
                 {
-                    var kh = agent.Prototype.KnowledgeHeuristics.FirstOrDefault(h => h == generatedHeuristic);
+                    var kh = agent.Prototype.DecisionOptions.FirstOrDefault(h => h == newDecisionOption);
 
                     //assign to current agent only
-                    agent.AssignNewHeuristic(kh, proportionalAI);
+                    agent.AssignNewDecisionOption(kh, proportionalAI);
                 }
 
 
                 if (layer.Set.Layers.Count > 1)
                     //set consequent to actor's variables for next layers
-                    generatedHeuristic.Apply(agent);
+                    newDecisionOption.Apply(agent);
             }
         }
     }

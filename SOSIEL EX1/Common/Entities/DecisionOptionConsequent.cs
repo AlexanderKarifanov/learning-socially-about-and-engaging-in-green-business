@@ -7,7 +7,7 @@ namespace Common.Entities
 {
     using Environments;
 
-    public sealed class KnowledgeHeuristicConsequent : ICloneable<KnowledgeHeuristicConsequent>, IEquatable<KnowledgeHeuristicConsequent>
+    public sealed class DecisionOptionConsequent : ICloneable<DecisionOptionConsequent>, IEquatable<DecisionOptionConsequent>
     {
         public string Param { get; private set; }
 
@@ -19,7 +19,7 @@ namespace Common.Entities
 
         public bool SavePrevious { get; private set; }
 
-        public KnowledgeHeuristicConsequent(string param, dynamic value, string variableValue = null, bool copyToCommon = false, bool savePrevious = false)
+        public DecisionOptionConsequent(string param, dynamic value, string variableValue = null, bool copyToCommon = false, bool savePrevious = false)
         {
             Param = param;
             Value = value;
@@ -33,9 +33,9 @@ namespace Common.Entities
         /// Creates shallow object copy 
         /// </summary>
         /// <returns></returns>
-        public KnowledgeHeuristicConsequent Clone()
+        public DecisionOptionConsequent Clone()
         {
-            return (KnowledgeHeuristicConsequent)MemberwiseClone();
+            return (DecisionOptionConsequent)MemberwiseClone();
         }
 
         /// <summary>
@@ -44,9 +44,9 @@ namespace Common.Entities
         /// <param name="old"></param>
         /// <param name="newValue"></param>
         /// <returns></returns>
-        public static KnowledgeHeuristicConsequent Renew(KnowledgeHeuristicConsequent old, dynamic newValue)
+        public static DecisionOptionConsequent Renew(DecisionOptionConsequent old, dynamic newValue)
         {
-            KnowledgeHeuristicConsequent newConsequent = old.Clone();
+            DecisionOptionConsequent newConsequent = old.Clone();
 
             newConsequent.Value = newValue;
             newConsequent.VariableValue = null;
@@ -56,11 +56,11 @@ namespace Common.Entities
 
 
         /// <summary>
-        /// Compares two KnowledgeHeuristicConsequent objects
+        /// Compares two DecisionOptionConsequent objects
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(KnowledgeHeuristicConsequent other)
+        public bool Equals(DecisionOptionConsequent other)
         {
             //check on reference equality first
             //custom logic for comparing two objects
@@ -74,7 +74,7 @@ namespace Common.Entities
         public override bool Equals(object obj)
         {
             //check on reference equality first
-            return base.Equals(obj) || Equals(obj as KnowledgeHeuristicConsequent);
+            return base.Equals(obj) || Equals(obj as DecisionOptionConsequent);
         }
 
         public override int GetHashCode()
@@ -83,7 +83,7 @@ namespace Common.Entities
             return 0;
         }
 
-        public static bool operator ==(KnowledgeHeuristicConsequent a, KnowledgeHeuristicConsequent b)
+        public static bool operator ==(DecisionOptionConsequent a, DecisionOptionConsequent b)
         {
             if (Object.ReferenceEquals(a, b))
             {
@@ -99,7 +99,7 @@ namespace Common.Entities
             return a.Equals(b);
         }
 
-        public static bool operator !=(KnowledgeHeuristicConsequent a, KnowledgeHeuristicConsequent b)
+        public static bool operator !=(DecisionOptionConsequent a, DecisionOptionConsequent b)
         {
             return !(a == b);
         }

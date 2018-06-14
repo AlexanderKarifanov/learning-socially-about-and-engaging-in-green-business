@@ -24,9 +24,9 @@ namespace Common.Configuration
 
         public bool SocialLearningEnabled { get; set; }
 
-        public bool HeuristicSelectionEnabled { get; set; }
+        public bool DecisionOptionSelectionEnabled { get; set; }
 
-        public bool HeuristicSelectionPart2Enabled { get; set; }
+        public bool DecisionOptionSelectionPart2Enabled { get; set; }
 
         public bool ActionTakingEnabled { get; set; }
 
@@ -51,7 +51,7 @@ namespace Common.Configuration
                     return new ProcessesConfiguration
                     {
                         ActionTakingEnabled = true,
-                        HeuristicSelectionEnabled = true,
+                        DecisionOptionSelectionEnabled = true,
                         AgentRandomizationEnabled = true,
                     };
                 case CognitiveLevel.CL2:
@@ -59,7 +59,7 @@ namespace Common.Configuration
                     {
                         ActionTakingEnabled = true,
                         AnticipatoryLearningEnabled = true,
-                        HeuristicSelectionEnabled = true,
+                        DecisionOptionSelectionEnabled = true,
                         AgentRandomizationEnabled = true
                     };
                 case CognitiveLevel.CL3:
@@ -67,8 +67,8 @@ namespace Common.Configuration
                     {
                         ActionTakingEnabled = true,
                         AnticipatoryLearningEnabled = true,
-                        HeuristicSelectionEnabled = true,
-                        HeuristicSelectionPart2Enabled = true,
+                        DecisionOptionSelectionEnabled = true,
+                        DecisionOptionSelectionPart2Enabled = true,
                         SocialLearningEnabled = true,
                         AgentRandomizationEnabled = true,
                     };
@@ -77,8 +77,8 @@ namespace Common.Configuration
                     {
                         ActionTakingEnabled = true,
                         AnticipatoryLearningEnabled = true,
-                        HeuristicSelectionEnabled = true,
-                        HeuristicSelectionPart2Enabled = true,
+                        DecisionOptionSelectionEnabled = true,
+                        DecisionOptionSelectionPart2Enabled = true,
                         SocialLearningEnabled = true,
                         CounterfactualThinkingEnabled = true,
                         InnovationEnabled = true,

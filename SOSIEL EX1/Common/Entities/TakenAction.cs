@@ -7,16 +7,16 @@ namespace Common.Entities
 {
     public class TakenAction
     {
-        public string HeuristicId { get; private set; }
+        public string DecisionOptionId { get; private set; }
 
         public string VariableName { get; private set; }
 
         public dynamic Value { get; private set; }
 
 
-        public TakenAction(string heuristicId, string variableName, dynamic value)
+        public TakenAction(string decisionOptionId, string variableName, dynamic value)
         {
-            HeuristicId = heuristicId;
+            DecisionOptionId = decisionOptionId;
             VariableName = variableName;
             Value = value;
         }

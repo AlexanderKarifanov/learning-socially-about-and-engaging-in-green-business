@@ -12,6 +12,6 @@ namespace Common.Entities
 
         public bool IsSequential { get; private set; }
 
-        public Dictionary<string, KnowledgeHeuristicsLayerConfiguration> Layer { get; private set; }
+        public Dictionary<string, DecisionOptionLayerConfiguration> Layer { get; private set; }
     }
 }

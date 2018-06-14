@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SHELite")]
+[assembly: AssemblyTitle("SOSIEL_EX1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Garry Sotnik")]
-[assembly: AssemblyProduct("ArtificialVCM")]
-[assembly: AssemblyCopyright("Copyright © Garry Sotnik 2017")]
+[assembly: AssemblyProduct("SOSIEL_EX1")]
+[assembly: AssemblyCopyright("Copyright © Garry Sotnik 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

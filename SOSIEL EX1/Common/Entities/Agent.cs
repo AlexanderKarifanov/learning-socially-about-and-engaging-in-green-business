@@ -21,15 +21,15 @@ namespace Common.Entities
 
         public List<IAgent> ConnectedAgents { get; set; }
 
-        public Dictionary<KnowledgeHeuristic, Dictionary<Goal, double>> AnticipationInfluence { get; protected set; }
+        public Dictionary<DecisionOption, Dictionary<Goal, double>> AnticipationInfluence { get; protected set; }
 
-        public List<KnowledgeHeuristic> AssignedKnowledgeHeuristics { get; protected set; }
+        public List<DecisionOption> AssignedDecisionOptions { get; protected set; }
 
         public List<Goal> AssignedGoals { get; protected set; }
 
         public Dictionary<Goal, GoalState> InitialGoalStates { get; protected set; }
 
-        public Dictionary<KnowledgeHeuristic, int> KnowledgeHeuristicActivationFreshness { get; protected set; }
+        public Dictionary<DecisionOption, int> DecisionOptionActivationFreshness { get; protected set; }
 
         public override string ToString()
         {
@@ -40,11 +40,11 @@ namespace Common.Entities
         {
             privateVariables = new Dictionary<string, dynamic>();
             ConnectedAgents = new List<IAgent>();
-            AnticipationInfluence = new Dictionary<KnowledgeHeuristic, Dictionary<Goal, double>>();
+            AnticipationInfluence = new Dictionary<DecisionOption, Dictionary<Goal, double>>();
             InitialGoalStates = new Dictionary<Goal, GoalState>();
-            AssignedKnowledgeHeuristics = new List<KnowledgeHeuristic>();
+            AssignedDecisionOptions = new List<DecisionOption>();
             AssignedGoals = new List<Goal>();
-            KnowledgeHeuristicActivationFreshness = new Dictionary<KnowledgeHeuristic, int>();
+            DecisionOptionActivationFreshness = new Dictionary<DecisionOption, int>();
         }
 
 
@@ -92,7 +92,7 @@ namespace Common.Entities
             agent.privateVariables = new Dictionary<string, dynamic>(privateVariables);
 
             agent.AssignedGoals = new List<Goal>(AssignedGoals);
-            agent.AssignedKnowledgeHeuristics = new List<KnowledgeHeuristic>(AssignedKnowledgeHeuristics);
+            agent.AssignedDecisionOptions = new List<DecisionOption>(AssignedDecisionOptions);
 
             //copy ai
             AnticipationInfluence.ForEach(kvp =>
@@ -100,7 +100,7 @@ namespace Common.Entities
                 agent.AnticipationInfluence.Add(kvp.Key, new Dictionary<Goal, double>(kvp.Value));
             });
 
-            agent.KnowledgeHeuristicActivationFreshness = new Dictionary<KnowledgeHeuristic, int>(KnowledgeHeuristicActivationFreshness);
+            agent.DecisionOptionActivationFreshness = new Dictionary<DecisionOption, int>(DecisionOptionActivationFreshness);
 
             return agent;
         }
@@ -150,78 +150,78 @@ namespace Common.Entities
         }
 
         /// <summary>
-        /// Assigns new heuristic to mental model (heuristic list) of current agent. If empty rooms ended, old heuristics will be removed.
+        /// Assigns new decision option to mental model of current agent. If empty rooms ended, old decision options will be removed.
         /// </summary>
-        /// <param name="newHeuristic"></param>
-        public void AssignNewHeuristic(KnowledgeHeuristic newHeuristic)
+        /// <param name="newDecisionOption"></param>
+        public void AssignNewDecisionOption(DecisionOption newDecisionOption)
         {
-            KnowledgeHeuristicsLayer layer = newHeuristic.Layer;
+            DecisionOptionLayer layer = newDecisionOption.Layer;
 
-            KnowledgeHeuristic[] layerHeuristics = AssignedKnowledgeHeuristics.GroupBy(r => r.Layer).Where(g => g.Key == layer).SelectMany(g => g).ToArray();
+            DecisionOption[] layerDecisionOptions = AssignedDecisionOptions.GroupBy(r => r.Layer).Where(g => g.Key == layer).SelectMany(g => g).ToArray();
 
-            if (layerHeuristics.Length < layer.LayerConfiguration.MaxNumberOfHeuristics)
+            if (layerDecisionOptions.Length < layer.LayerConfiguration.MaxNumberOfDecisionOptions)
             {
-                AssignedKnowledgeHeuristics.Add(newHeuristic);
-                AnticipationInfluence.Add(newHeuristic, new Dictionary<Goal, double>());
+                AssignedDecisionOptions.Add(newDecisionOption);
+                AnticipationInfluence.Add(newDecisionOption, new Dictionary<Goal, double>());
 
-                KnowledgeHeuristicActivationFreshness[newHeuristic] = 0;
+                DecisionOptionActivationFreshness[newDecisionOption] = 0;
             }
             else
             {
-                KnowledgeHeuristic heuristicForRemoving = KnowledgeHeuristicActivationFreshness.Where(kvp => kvp.Key.Layer == layer && kvp.Key.IsAction).GroupBy(kvp => kvp.Value).OrderByDescending(g => g.Key)
+                DecisionOption decisionOptionForRemoving = DecisionOptionActivationFreshness.Where(kvp => kvp.Key.Layer == layer && kvp.Key.IsAction).GroupBy(kvp => kvp.Value).OrderByDescending(g => g.Key)
                     .Take(1).SelectMany(g => g.Select(kvp => kvp.Key)).RandomizeOne();
 
-                AssignedKnowledgeHeuristics.Remove(heuristicForRemoving);
-                AnticipationInfluence.Remove(heuristicForRemoving);
+                AssignedDecisionOptions.Remove(decisionOptionForRemoving);
+                AnticipationInfluence.Remove(decisionOptionForRemoving);
 
-                KnowledgeHeuristicActivationFreshness.Remove(heuristicForRemoving);
+                DecisionOptionActivationFreshness.Remove(decisionOptionForRemoving);
 
-                AssignNewHeuristic(newHeuristic);
+                AssignNewDecisionOption(newDecisionOption);
             }
         }
 
         /// <summary>
-        /// Assigns new heuristic with defined anticipated influence to mental model (heuristic list) of current agent. If empty rooms ended, old heuristics will be removed. 
+        /// Assigns new decision option with defined anticipated influence to mental model of current agent. If empty rooms ended, old decision options will be removed. 
         /// Anticipated influence is copied to the agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="anticipatedInfluence"></param>
-        public void AssignNewHeuristic(KnowledgeHeuristic newHeuristic, Dictionary<Goal, double> anticipatedInfluence)
+        public void AssignNewDecisionOption(DecisionOption newDecisionOption, Dictionary<Goal, double> anticipatedInfluence)
         {
-            AssignNewHeuristic(newHeuristic);
+            AssignNewDecisionOption(newDecisionOption);
 
             //copy ai to personal ai for assigned goals only
 
             Dictionary<Goal, double> ai = anticipatedInfluence.Where(kvp => AssignedGoals.Contains(kvp.Key)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            AnticipationInfluence[newHeuristic] = new Dictionary<Goal, double>(ai);
+            AnticipationInfluence[newDecisionOption] = new Dictionary<Goal, double>(ai);
         }
 
         /// <summary>
-        /// Adds heuristic to prototype heuristics and then assign one to the heuristic list of current agent.
+        /// Adds decision option to agent prototype and then assign one to the decision option list of current agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="layer"></param>
-        public void AddHeuristic(KnowledgeHeuristic newHeuristic, KnowledgeHeuristicsLayer layer)
+        public void AddDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer)
         {
-            Prototype.AddNewHeuristic(newHeuristic, layer);
+            Prototype.AddNewDecisionOption(newDecisionOption, layer);
 
-            AssignNewHeuristic(newHeuristic);
+            AssignNewDecisionOption(newDecisionOption);
         }
 
 
         /// <summary>
-        /// Adds heuristic to prototype heuristics and then assign one to the heuristic list of current agent. 
+        /// Adds decision option to agent prototype and then assign one to the decision option list of current agent. 
         /// Also copies anticipated influence to the agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="layer"></param>
         /// <param name="anticipatedInfluence"></param>
-        public void AddHeuristic(KnowledgeHeuristic newHeuristic, KnowledgeHeuristicsLayer layer, Dictionary<Goal, double> anticipatedInfluence)
+        public void AddDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer, Dictionary<Goal, double> anticipatedInfluence)
         {
-            Prototype.AddNewHeuristic(newHeuristic, layer);
+            Prototype.AddNewDecisionOption(newDecisionOption, layer);
 
-            AssignNewHeuristic(newHeuristic, anticipatedInfluence);
+            AssignNewDecisionOption(newDecisionOption, anticipatedInfluence);
         }
 
         /// <summary>

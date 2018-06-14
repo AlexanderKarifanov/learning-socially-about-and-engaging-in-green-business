@@ -4,17 +4,17 @@ using System.Linq;
 using Common.Entities;
 using Common.Helpers;
 using Common.Randoms;
-using SHELite.Configuration;
+using SOSIEL_EX1.Configuration;
 
-namespace SHELite
+namespace SOSIEL_EX1
 {
-    public sealed class SHELiteAgent : Agent
+    public sealed class Agent : Common.Entities.Agent
     {
         public AgentStateConfiguration AgentStateConfiguration { get; private set; }
 
-        public override Agent Clone()
+        public override Common.Entities.Agent Clone()
         {
-            SHELiteAgent agent = (SHELiteAgent)base.Clone();
+            Agent agent = (Agent)base.Clone();
 
             return agent;
         }
@@ -30,17 +30,17 @@ namespace SHELite
         /// <param name="agentConfiguration"></param>
         /// <param name="prototype"></param>
         /// <returns></returns>
-        public static SHELiteAgent CreateAgent(AgentStateConfiguration agentConfiguration, AgentPrototype prototype)
+        public static Agent CreateAgent(AgentStateConfiguration agentConfiguration, AgentPrototype prototype)
         {
-            SHELiteAgent agent = new SHELiteAgent();
+            Agent agent = new Agent();
 
             agent.Prototype = prototype;
             agent.privateVariables = new Dictionary<string, dynamic>(agentConfiguration.PrivateVariables);
 
-            agent.AssignedKnowledgeHeuristics = prototype.KnowledgeHeuristics.Where(r => agentConfiguration.AssignedKnowledgeHeuristics.Contains(r.Id)).ToList();
+            agent.AssignedDecisionOptions = prototype.DecisionOptions.Where(r => agentConfiguration.AssignedDecisionOptions.Contains(r.Id)).ToList();
             agent.AssignedGoals = prototype.Goals.Where(g => agentConfiguration.AssignedGoals.Contains(g.Name)).ToList();
 
-            agent.AssignedKnowledgeHeuristics.ForEach(kh => agent.KnowledgeHeuristicActivationFreshness.Add(kh, 1));
+            agent.AssignedDecisionOptions.ForEach(kh => agent.DecisionOptionActivationFreshness.Add(kh, 1));
 
             //generate goal importance
             agentConfiguration.GoalsState.ForEach(kvp =>
@@ -79,7 +79,7 @@ namespace SHELite
             });
 
             //initializes initial anticipated influence for each kh and goal assigned to the agent
-            agent.AssignedKnowledgeHeuristics.ForEach(kh =>
+            agent.AssignedDecisionOptions.ForEach(kh =>
             {
                 Dictionary<string, double> source;
 
@@ -111,12 +111,12 @@ namespace SHELite
             return agent;
         }
 
-        private static void InitializeDynamicvariables(SHELiteAgent agent)
+        private static void InitializeDynamicvariables(Agent agent)
         {
             agent[AlgorithmVariables.AgentStatus] = "active";
         }
 
-        private static double GenerateImportance(SHELiteAgent agent, double min, double max)
+        private static double GenerateImportance(Agent agent, double min, double max)
         {
             double rand;
 

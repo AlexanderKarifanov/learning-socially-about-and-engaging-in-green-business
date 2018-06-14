@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SHELite.Configuration
+namespace SOSIEL_EX1.Configuration
 {
     /// <summary>
     /// Agent state configuration model. Used to parse section "InitialState.AgentsState".
@@ -25,7 +25,7 @@ namespace SHELite.Configuration
         public Dictionary<string, Dictionary<string, string>> AnticipatedInfluenceTransform { get; set; }
 
         [JsonRequired]
-        public string[] AssignedKnowledgeHeuristics { get; set; }
+        public string[] AssignedDecisionOptions { get; set; }
 
         [JsonRequired]
         public string[] AssignedGoals { get; set; }

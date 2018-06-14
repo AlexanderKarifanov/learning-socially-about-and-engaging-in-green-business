@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SHELite.Configuration
+namespace SOSIEL_EX1.Configuration
 {
     /// <summary>
     /// Goal state configuration model. Used to parse section "InitialState.AgentsState.GoalsState".

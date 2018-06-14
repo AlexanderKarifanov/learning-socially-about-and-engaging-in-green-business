@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace SHELite.Configuration
+namespace SOSIEL_EX1.Configuration
 {
     static class MemberInfoExtensions
     {

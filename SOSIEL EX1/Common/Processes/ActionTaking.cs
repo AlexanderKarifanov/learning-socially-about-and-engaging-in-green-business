@@ -20,7 +20,7 @@ namespace Common.Processes
         /// <param name="site"></param>
         public void Execute(IAgent agent, AgentState state, Site site)
         {
-            KnowledgeHeuristicsHistory history = state.HeuristicHistories[site];
+            DecisionOptionsHistory history = state.DecisionOptionsHistories[site];
 
             state.TakenActions.Add(site, new List<TakenAction>());
 

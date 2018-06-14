@@ -6,13 +6,13 @@ namespace Common.Entities
 {
     using Enums;
 
-    public sealed class KnowledgeHeuristicsLayerConfiguration
+    public sealed class DecisionOptionLayerConfiguration
     {
         public bool Modifiable { get; private set; }
 
         public bool UseDoNothing { get; private set; }
 
-        public int MaxNumberOfHeuristics { get; private set; }
+        public int MaxNumberOfDecisionOptions { get; private set; }
 
         public int[] ConsequentValueInterval { get; private set; }
 
@@ -36,10 +36,10 @@ namespace Common.Entities
 
         public string MaxConsequentReference { get; private set; }
 
-        public KnowledgeHeuristicsLayerConfiguration()
+        public DecisionOptionLayerConfiguration()
         {
             Modifiable = false;
-            MaxNumberOfHeuristics = 10;
+            MaxNumberOfDecisionOptions = 10;
         }
 
         /// <summary>

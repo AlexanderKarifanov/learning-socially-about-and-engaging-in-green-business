@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SHELite.Configuration
+namespace SOSIEL_EX1.Configuration
 {
     /// <summary>
     /// Algorithm configuration model. Used to parse section "AlgorithmConfiguration".

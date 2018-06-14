@@ -13,48 +13,48 @@ namespace Common.Entities
 
         List<IAgent> ConnectedAgents { get; }
 
-        Dictionary<KnowledgeHeuristic, Dictionary<Goal, double>> AnticipationInfluence { get; }
+        Dictionary<DecisionOption, Dictionary<Goal, double>> AnticipationInfluence { get; }
 
         List<Goal> AssignedGoals { get; }
 
-        List<KnowledgeHeuristic> AssignedKnowledgeHeuristics { get; }
+        List<DecisionOption> AssignedDecisionOptions { get; }
 
-        Dictionary<KnowledgeHeuristic, int> KnowledgeHeuristicActivationFreshness { get; }
+        Dictionary<DecisionOption, int> DecisionOptionActivationFreshness { get; }
 
         AgentPrototype Prototype { get; }
 
         Dictionary<Goal, GoalState> InitialGoalStates { get; }
 
         /// <summary>
-        /// Assigns new heuristic to mental model (heuristic list) of current agent. If empty rooms ended, old heuristics will be removed.
+        /// Assigns new decision option to mental model of current agent. If empty rooms ended, old decision option will be removed.
         /// </summary>
-        /// <param name="newHeuristic"></param>
-        void AssignNewHeuristic(KnowledgeHeuristic newHeuristic);
+        /// <param name="newDecisionOption"></param>
+        void AssignNewDecisionOption(DecisionOption newDecisionOption);
 
         /// <summary>
-        /// Assigns new heuristic with defined anticipated influence to mental model (heuristic list) of current agent. If empty rooms ended, old heuristics will be removed. 
+        /// Assigns new decision option with defined anticipated influence to mental model of current agent. If empty rooms ended, old decision option will be removed. 
         /// Anticipated influence is copied to the agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="anticipatedInfluence"></param>
-        void AssignNewHeuristic(KnowledgeHeuristic newHeuristic, Dictionary<Goal, double> anticipatedInfluence);
+        void AssignNewDecisionOption(DecisionOption newDecisionOption, Dictionary<Goal, double> anticipatedInfluence);
 
         /// <summary>
-        /// Adds heuristic to prototype heuristics and then assign one to the heuristic list of current agent.
+        /// Adds decision option to prototype and then assign one to the decision option list of current agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="layer"></param>
-        void AddHeuristic(KnowledgeHeuristic newHeuristic, KnowledgeHeuristicsLayer layer);
+        void AddDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer);
 
 
         /// <summary>
-        /// Adds heuristic to prototype heuristics and then assign one to the heuristic list of current agent. 
+        /// Adds decision option to prototype DecisionOption and then assign one to the decision option list of current agent. 
         /// Also copies anticipated influence to the agent.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="layer"></param>
         /// <param name="anticipatedInfluence"></param>
-        void AddHeuristic(KnowledgeHeuristic newHeuristic, KnowledgeHeuristicsLayer layer, Dictionary<Goal, double> anticipatedInfluence);
+        void AddDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer, Dictionary<Goal, double> anticipatedInfluence);
 
         /// <summary>
         /// Set variable value to prototype variables

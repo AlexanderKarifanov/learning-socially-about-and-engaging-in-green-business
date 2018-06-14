@@ -113,7 +113,7 @@ namespace Common.Processes
             double maxPossibleDifference = 0;
 
 
-            KnowledgeHeuristicsLayerConfiguration layerConfiguration = agent.AssignedKnowledgeHeuristics.Where(kh => kh.Consequent.Param == goal.ReferenceVariable && (kh.Layer.LayerConfiguration.ConsequentValueInterval != null && kh.Layer.LayerConfiguration.ConsequentValueInterval.Length == 2))
+            DecisionOptionLayerConfiguration layerConfiguration = agent.AssignedDecisionOptions.Where(kh => kh.Consequent.Param == goal.ReferenceVariable && (kh.Layer.LayerConfiguration.ConsequentValueInterval != null && kh.Layer.LayerConfiguration.ConsequentValueInterval.Length == 2))
                 .Select(kh => kh.Layer.LayerConfiguration).FirstOrDefault();
 
             if(layerConfiguration != null)
@@ -129,7 +129,7 @@ namespace Common.Processes
 
                 if (goal.Tendency == "Minimize")
                 {
-                    double maxValue = agent.AssignedKnowledgeHeuristics.Where(kh => kh.Consequent.Param == goal.ReferenceVariable)
+                    double maxValue = agent.AssignedDecisionOptions.Where(kh => kh.Consequent.Param == goal.ReferenceVariable)
                         .Select(kh => string.IsNullOrEmpty(kh.Consequent.VariableValue) ? (double)kh.Consequent.Value : (double)agent[kh.Consequent.VariableValue])
                         .Max();
 
@@ -138,7 +138,7 @@ namespace Common.Processes
 
                 //if (goal.Tendency == "EqualToOrBelowFocalValue")
                 //{
-                //    double maxValue = agent.AssignedKnowledgeHeuristics.Where(rule => rule.Consequent.Param == goal.ReferenceVariable)
+                //    double maxValue = agent.AssignedDecisionOptions.Where(rule => rule.Consequent.Param == goal.ReferenceVariable)
                 //        .Select(rule => string.IsNullOrEmpty(rule.Consequent.VariableValue) ? (double)rule.Consequent.Value : (double)agent[rule.Consequent.VariableValue])
                 //        .Max();
 
@@ -316,10 +316,10 @@ namespace Common.Processes
                 currentGoalState.AnticipatedInfluenceValue = anticipatedInfluence;
 
 
-                //finds activated heuristics for each site 
-                IEnumerable<KnowledgeHeuristic> activatedInPriorIteration = previousIterationAgentState.HeuristicHistories.SelectMany(rh => rh.Value.Activated);
+                //finds activated decision option for each site 
+                IEnumerable<DecisionOption> activatedInPriorIteration = previousIterationAgentState.DecisionOptionsHistories.SelectMany(rh => rh.Value.Activated);
 
-                //update anticipated influences of found heuristics 
+                //update anticipated influences of found decision option 
                 activatedInPriorIteration.ForEach(r =>
                 {
                     agent.AnticipationInfluence[r][goal] = anticipatedInfluence;

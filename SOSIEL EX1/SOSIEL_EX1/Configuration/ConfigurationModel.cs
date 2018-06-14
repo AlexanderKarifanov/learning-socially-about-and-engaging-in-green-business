@@ -2,7 +2,7 @@
 using Common.Entities;
 using Newtonsoft.Json;
 
-namespace SHELite.Configuration
+namespace SOSIEL_EX1.Configuration
 {
     /// <summary>
     /// Main configuration model.

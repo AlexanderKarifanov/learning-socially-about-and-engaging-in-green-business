@@ -14,25 +14,25 @@ namespace Common.Processes
     public class SocialLearning
     {
         /// <summary>
-        /// Executes social learning process of current agent for specific heuristic set layer
+        /// Executes social learning process of current agent for specific decision option set layer
         /// </summary>
         /// <param name="agent"></param>
         /// <param name="lastIteration"></param>
         /// <param name="layer"></param>
-        public void ExecuteLearning(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, KnowledgeHeuristicsLayer layer)
+        public void ExecuteLearning(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, DecisionOptionLayer layer)
         {
             Dictionary<IAgent, AgentState> priorIterationState = lastIteration.Previous.Value;
 
             agent.ConnectedAgents.Randomize().ForEach(neighbour =>
             {
-                IEnumerable<KnowledgeHeuristic> activatedHeuristics = priorIterationState[neighbour].HeuristicHistories
+                IEnumerable<DecisionOption> activatedDecisionOptions = priorIterationState[neighbour].DecisionOptionsHistories
                     .SelectMany(rh => rh.Value.Activated).Where(r => r.Layer == layer);
 
-                activatedHeuristics.ForEach(heuristic =>
+                activatedDecisionOptions.ForEach(decisionOption =>
                 {
-                    if (agent.AssignedKnowledgeHeuristics.Contains(heuristic) == false)
+                    if (agent.AssignedDecisionOptions.Contains(decisionOption) == false)
                     {
-                        agent.AssignNewHeuristic(heuristic, neighbour.AnticipationInfluence[heuristic]);
+                        agent.AssignNewDecisionOption(decisionOption, neighbour.AnticipationInfluence[decisionOption]);
                     }
                 });
 

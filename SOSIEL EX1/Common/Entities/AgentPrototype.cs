@@ -21,7 +21,7 @@ namespace Common.Entities
         public Dictionary<string, MentalModelConfiguration> MentalModel { get; private set; }
 
         [JsonProperty]
-        public List<KnowledgeHeuristic> KnowledgeHeuristics { get; }
+        public List<DecisionOption> DecisionOptions { get; }
 
 
         public Dictionary<string, double> DoNothingAnticipatedInfluence { get; private set; }
@@ -42,7 +42,7 @@ namespace Common.Entities
         {
             CommonVariables = new Dictionary<string, dynamic>();
             MentalModel = new Dictionary<string, MentalModelConfiguration>();
-            KnowledgeHeuristics = new List<KnowledgeHeuristic>();
+            DecisionOptions = new List<DecisionOption>();
         }
 
         public dynamic this[string key]
@@ -67,10 +67,10 @@ namespace Common.Entities
         /// <returns></returns>
         private List<MentalModel> TransformKhToMentalModel()
         {
-            mentalProto = KnowledgeHeuristics.GroupBy(kh => kh.MentalModel).OrderBy(g => g.Key).Select(g =>
+            mentalProto = DecisionOptions.GroupBy(kh => kh.MentalModel).OrderBy(g => g.Key).Select(g =>
                    new MentalModel(g.Key, Goals.Where(goal => MentalModel[g.Key.ToString()].AssociatedWith.Contains(goal.Name)).ToArray(),
-                       g.GroupBy(kh => kh.KnowledgeHeuristicsLayer).OrderBy(g2 => g2.Key).
-                       Select(g2 => new KnowledgeHeuristicsLayer(MentalModel[g.Key.ToString()].Layer[g2.Key.ToString()], g2)))).ToList();
+                       g.GroupBy(kh => kh.DecisionOptionsLayer).OrderBy(g2 => g2.Key).
+                       Select(g2 => new DecisionOptionLayer(MentalModel[g.Key.ToString()].Layer[g2.Key.ToString()], g2)))).ToList();
 
             return mentalProto;
         }
@@ -78,37 +78,37 @@ namespace Common.Entities
 
 
         /// <summary>
-        /// Adds heuristic to mental model of current prototype if it isn't exists in the scope.
+        /// Adds decision option to mental model of current prototype if it isn't exists in the scope.
         /// </summary>
-        /// <param name="newHeuristic"></param>
+        /// <param name="newDecisionOption"></param>
         /// <param name="layer"></param>
-        public void AddNewHeuristic(KnowledgeHeuristic newHeuristic, KnowledgeHeuristicsLayer layer)
+        public void AddNewDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer)
         {
             if (mentalProto == null)
                 TransformKhToMentalModel();
 
-            layer.Add(newHeuristic);
+            layer.Add(newDecisionOption);
 
-            KnowledgeHeuristics.Add(newHeuristic);
+            DecisionOptions.Add(newDecisionOption);
         }
 
 
         /// <summary>
-        /// Checks for similar heuristics
+        /// Checks for similar decision options
         /// </summary>
-        /// <param name="heuristic"></param>
+        /// <param name="decisionOption"></param>
         /// <returns></returns>
-        public bool IsSimilarHeuristicExists(KnowledgeHeuristic heuristic)
+        public bool IsSimilarDecisionOptionExists(DecisionOption decisionOption)
         {
-            return KnowledgeHeuristics.Any(kh => kh == heuristic);
+            return DecisionOptions.Any(kh => kh == decisionOption);
         }
 
 
         /// <summary>
-        /// Adds do nothing heuristic to each heuristic set and heuristic layer
+        /// Adds do nothing decision option to each decisionOption set and decisionOption layer
         /// </summary>
-        /// <returns>Returns created heuristic ids</returns>
-        public IEnumerable<string> AddDoNothingHeuristics()
+        /// <returns>Returns created decision option ids</returns>
+        public IEnumerable<string> AddDoNothingDecisionOptions()
         {
             List<string> temp = new List<string>();
 
@@ -117,17 +117,17 @@ namespace Common.Entities
                 //only for layers with UseDoNothing: true configuration
                 mm.Layers.Where(layer => layer.LayerConfiguration.UseDoNothing).ForEach(layer =>
                 {
-                    if (!layer.KnowledgeHeuristics.Any(kh => kh.IsAction == false))
+                    if (!layer.DecisionOptions.Any(kh => kh.IsAction == false))
                     {
-                        KnowledgeHeuristic proto = layer.KnowledgeHeuristics.First();
+                        DecisionOption proto = layer.DecisionOptions.First();
 
-                        KnowledgeHeuristic doNothing = KnowledgeHeuristic.Create(
-                            new KnowledgeHeuristicAntecedentPart[] { new KnowledgeHeuristicAntecedentPart(SosielVariables.AgentStatus, "==", true) },
-                            KnowledgeHeuristicConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
+                        DecisionOption doNothing = DecisionOption.Create(
+                            new [] { new DecisionOptionAntecedentPart(SosielVariables.AgentStatus, "==", true) },
+                            DecisionOptionConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
                             false, false, 1, true
                         );
 
-                        AddNewHeuristic(doNothing, layer);
+                        AddNewDecisionOption(doNothing, layer);
 
                         temp.Add(doNothing.Id);
                     }

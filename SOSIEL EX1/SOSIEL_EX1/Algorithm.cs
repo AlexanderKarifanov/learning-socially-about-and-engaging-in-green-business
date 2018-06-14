@@ -7,12 +7,12 @@ using Common.Configuration;
 using Common.Entities;
 using Common.Exceptions;
 using Common.Helpers;
-using SHELite.Configuration;
-using SHELite.Output;
+using SOSIEL_EX1.Configuration;
+using SOSIEL_EX1.Output;
 
-namespace SHELite
+namespace SOSIEL_EX1
 {
-    public sealed class SHELiteAlgorithm : SosielAlgorithm, IAlgorithm
+    public sealed class Algorithm : SosielAlgorithm, IAlgorithm
     {
         public string Name { get { return "Cognitive level 4 SHE Lite"; } }
 
@@ -26,8 +26,8 @@ namespace SHELite
             {
                 ActionTakingEnabled = true,
                 AnticipatoryLearningEnabled = true,
-                HeuristicSelectionEnabled = true,
-                HeuristicSelectionPart2Enabled = true,
+                DecisionOptionSelectionEnabled = true,
+                DecisionOptionSelectionPart2Enabled = true,
                 SocialLearningEnabled = true,
                 CounterfactualThinkingEnabled = true,
                 InnovationEnabled = true,
@@ -38,7 +38,7 @@ namespace SHELite
             };
         }
 
-        public SHELiteAlgorithm(ConfigurationModel configuration) : base(1, GetProcessConfiguration())
+        public Algorithm(ConfigurationModel configuration) : base(1, GetProcessConfiguration())
         {
             _configuration = configuration;
 
@@ -88,7 +88,7 @@ namespace SHELite
 
             InitialStateConfiguration initialState = _configuration.InitialState;
 
-            //add donothing heuristic if necessary
+            //add donothing decision option if necessary
             agentPrototypes.ForEach(kvp =>
             {
                 AgentPrototype prototype = kvp.Value;
@@ -97,17 +97,17 @@ namespace SHELite
 
                 if (prototype.MentalProto.Any(set => set.Layers.Any(layer => layer.LayerConfiguration.UseDoNothing)))
                 {
-                    var added = prototype.AddDoNothingHeuristics();
+                    var added = prototype.AddDoNothingDecisionOptions();
 
                     initialState.AgentsState.Where(aState => aState.PrototypeOfAgent == prototypeName).ForEach(aState =>
                     {
-                        aState.AssignedKnowledgeHeuristics = aState.AssignedKnowledgeHeuristics.Concat(added).ToArray();
+                        aState.AssignedDecisionOptions = aState.AssignedDecisionOptions.Concat(added).ToArray();
                     });
                 }
             });
 
-            Dictionary<string, List<Agent>> networks = initialState.AgentsState.SelectMany(state => state.SocialNetwork ?? new string[0]).Distinct()
-                .ToDictionary(network => network, network => new List<Agent>());
+            Dictionary<string, List<Common.Entities.Agent>> networks = initialState.AgentsState.SelectMany(state => state.SocialNetwork ?? new string[0]).Distinct()
+                .ToDictionary(network => network, network => new List<Common.Entities.Agent>());
 
             //create agents, groupby is used for saving agents numeration, e.g. FE1, HM1. HM2 etc
             initialState.AgentsState.GroupBy(state => state.PrototypeOfAgent).ForEach((agentStateGroup) =>
@@ -120,7 +120,7 @@ namespace SHELite
                 {
                     for (int i = 0; i < agentState.NumberOfAgents; i++)
                     {
-                        Agent agent = SHELiteAgent.CreateAgent(agentState, prototype);
+                        Common.Entities.Agent agent = Agent.CreateAgent(agentState, prototype);
                         agent.SetId(index);
 
                         agents.Add(agent);
@@ -257,7 +257,7 @@ namespace SHELite
                     Income = agent[AlgorithmVariables.AgentIncome],
                     Expenses = agent[AlgorithmVariables.AgentExpenses],
                     Savings = agent[AlgorithmVariables.HouseholdSavings],
-                    NumberOfKH = agent.AssignedKnowledgeHeuristics.Count
+                    NumberOfKH = agent.AssignedDecisionOptions.Count
                 };
 
                 WriteToCSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);

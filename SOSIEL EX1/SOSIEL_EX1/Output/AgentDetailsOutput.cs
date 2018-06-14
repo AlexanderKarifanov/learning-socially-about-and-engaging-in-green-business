@@ -1,4 +1,4 @@
-﻿namespace SHELite.Output
+﻿namespace SOSIEL_EX1.Output
 {
     public class AgentDetailsOutput
     {

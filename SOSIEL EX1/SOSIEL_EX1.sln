@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}"
 EndProject
@@ -37,10 +37,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		PrimaryVersionType.Release|Any CPU = AssemblyVersionAttribute
-		UpdateAssemblyVersion.Release|Any CPU = False
-		UpdateAssemblyFileVersion.Release|Any CPU = False
-		UpdateAssemblyInfoVersion.Release|Any CPU = False
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E9DA2E64-D41B-422D-906B-F2E5011AE3F6}
 	EndGlobalSection
 EndGlobal

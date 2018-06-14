@@ -19,13 +19,13 @@ namespace Common.Processes
         GoalState goalState;
 
 
-        Dictionary<KnowledgeHeuristic, Dictionary<Goal, double>> anticipatedInfluence;
+        Dictionary<DecisionOption, Dictionary<Goal, double>> anticipatedInfluence;
 
-        KnowledgeHeuristic[] matchedHeuristics;
+        DecisionOption[] matchedDecisionOptions;
 
 
-        KnowledgeHeuristic priorPeriodActivatedHeuristic;
-        KnowledgeHeuristic heuristicForActivating;
+        DecisionOption priorPeriodActivatedDecisionOption;
+        DecisionOption decisionOptionForActivating;
 
         #region Specific logic for tendencies
         protected override void EqualToOrAboveFocalValue()
@@ -34,14 +34,14 @@ namespace Common.Processes
 
             //if (goalState.DiffCurrentAndFocal > 0)
             //{
-            //    if (matchedHeuristics.Any(r => r == priorPeriodActivatedHeuristic))
+            //    if (matchedDecisionOptions.Any(r => r == priorPeriodActivatedDecisionOption))
             //    {
-            //        heuristicForActivating = priorPeriodActivatedHeuristic;
+            //        decisionOptionForActivating = priorPeriodActivatedDecisionOption;
             //        return;
             //    }
             //    else
             //    {
-            //        Rule[] temp = matchedHeuristics.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
+            //        Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
 
             //        selected = temp.Where(r=> anticipatedInfluence[r][processedGoal] < goalState.DiffCurrentAndFocal).ToArray();
 
@@ -53,7 +53,7 @@ namespace Common.Processes
             //}
             //else
             //{
-            //    Rule[] temp = matchedHeuristics.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
+            //    Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
 
             //    selected = temp.Where(r=> anticipatedInfluence[r][processedGoal] > goalState.DiffCurrentAndFocal).ToArray();
 
@@ -67,14 +67,14 @@ namespace Common.Processes
             //{
             //    selected = selected.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
 
-            //    heuristicForActivating = selected.RandomizeOne();
+            //    decisionOptionForActivating = selected.RandomizeOne();
             //}
 
 
 
 
 
-            //We don't do anything. Do nothing heuristic will be selected later.
+            //We don't do anything. Do nothing decisionOption will be selected later.
         }
 
         protected override void EqualToOrBelowFocalValue()
@@ -83,14 +83,14 @@ namespace Common.Processes
 
             //if (goalState.DiffCurrentAndFocal < 0)
             //{
-            //    if (matchedHeuristics.Any(r => r == priorPeriodActivatedHeuristic))
+            //    if (matchedDecisionOptions.Any(r => r == priorPeriodActivatedDecisionOption))
             //    {
-            //        heuristicForActivating = priorPeriodActivatedHeuristic;
+            //        decisionOptionForActivating = priorPeriodActivatedDecisionOption;
             //        return;
             //    }
             //    else
             //    {
-            //        Rule[] temp = matchedHeuristics.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
+            //        Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
 
             //        selected = temp.Where(r => anticipatedInfluence[r][processedGoal] < Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
 
@@ -103,7 +103,7 @@ namespace Common.Processes
             //}
             //else
             //{
-            //    Rule[] temp = matchedHeuristics.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
+            //    Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
 
             //    selected = temp.Where(r => anticipatedInfluence[r][processedGoal] > Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
 
@@ -117,7 +117,7 @@ namespace Common.Processes
             //{
             //    selected = selected.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
 
-            //    heuristicForActivating = selected.RandomizeOne();
+            //    decisionOptionForActivating = selected.RandomizeOne();
             //}
 
             throw new NotImplementedException("EqualToOrBelowFocalValue is not implemented in ActionSelection");
@@ -125,21 +125,21 @@ namespace Common.Processes
 
         protected override void Maximize()
         {
-            if (matchedHeuristics.Length > 0)
+            if (matchedDecisionOptions.Length > 0)
             {
-                KnowledgeHeuristic[] selected = matchedHeuristics.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderByDescending(hg => hg.Key).First().ToArray();
+                DecisionOption[] selected = matchedDecisionOptions.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderByDescending(hg => hg.Key).First().ToArray();
 
-                heuristicForActivating = selected.RandomizeOne();
+                decisionOptionForActivating = selected.RandomizeOne();
             }
         }
 
         protected override void Minimize()
         {
-            if (matchedHeuristics.Length > 0)
+            if (matchedDecisionOptions.Length > 0)
             {
-                KnowledgeHeuristic[] selected = matchedHeuristics.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
+                DecisionOption[] selected = matchedDecisionOptions.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
 
-                heuristicForActivating = selected.RandomizeOne();
+                decisionOptionForActivating = selected.RandomizeOne();
             }
         }
         #endregion
@@ -148,16 +148,16 @@ namespace Common.Processes
         /// Shares collective action among same household agents
         /// </summary>
         /// <param name="currentAgent"></param>
-        /// <param name="heuristic"></param>
+        /// <param name="decisionOption"></param>
         /// <param name="agentStates"></param>
-        void ShareCollectiveAction(IAgent currentAgent, KnowledgeHeuristic heuristic, Dictionary<IAgent, AgentState> agentStates)
+        void ShareCollectiveAction(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState> agentStates)
         {
             foreach (IAgent neighbour in currentAgent.ConnectedAgents
                 .Where(connected => connected[SosielVariables.Network] == currentAgent[SosielVariables.Network]))
             {
-                if (neighbour.AssignedKnowledgeHeuristics.Contains(heuristic) == false)
+                if (neighbour.AssignedDecisionOptions.Contains(decisionOption) == false)
                 {
-                    neighbour.AssignNewHeuristic(heuristic, currentAgent.AnticipationInfluence[heuristic]);
+                    neighbour.AssignNewDecisionOption(decisionOption, currentAgent.AnticipationInfluence[decisionOption]);
                 }
             }
         }
@@ -168,65 +168,65 @@ namespace Common.Processes
         /// <param name="agent"></param>
         /// <param name="lastIteration"></param>
         /// <param name="rankedGoals"></param>
-        /// <param name="processedHeuristics"></param>
+        /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
         public void ExecutePartI(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration,
-            Goal[] rankedGoals, KnowledgeHeuristic[] processedHeuristics, Site site)
+            Goal[] rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
         {
-            heuristicForActivating = null;
+            decisionOptionForActivating = null;
 
             AgentState agentState = lastIteration.Value[agent];
             AgentState priorPeriod = lastIteration.Previous?.Value[agent];
 
-            //adds new heuristic history for specific site if it doesn't exist
-            if (agentState.HeuristicHistories.ContainsKey(site) == false)
-                agentState.HeuristicHistories.Add(site, new KnowledgeHeuristicsHistory());
+            //adds new decisionOption history for specific site if it doesn't exist
+            if (agentState.DecisionOptionsHistories.ContainsKey(site) == false)
+                agentState.DecisionOptionsHistories.Add(site, new DecisionOptionsHistory());
 
-            KnowledgeHeuristicsHistory history = agentState.HeuristicHistories[site];
+            DecisionOptionsHistory history = agentState.DecisionOptionsHistories[site];
 
-            processedGoal = rankedGoals.First(g => processedHeuristics.First().Layer.Set.AssociatedWith.Contains(g));
+            processedGoal = rankedGoals.First(g => processedDecisionOptions.First().Layer.Set.AssociatedWith.Contains(g));
             goalState = agentState.GoalsState[processedGoal];
 
-            matchedHeuristics = processedHeuristics.Except(history.BlockedHeuristics).Where(h => h.IsMatch(agent)).ToArray();
+            matchedDecisionOptions = processedDecisionOptions.Except(history.Blocked).Where(h => h.IsMatch(agent)).ToArray();
 
-            if (matchedHeuristics.Length > 1)
+            if (matchedDecisionOptions.Length > 1)
             {
-                if(priorPeriod != null)
-                    priorPeriodActivatedHeuristic = priorPeriod.HeuristicHistories[site].Activated.FirstOrDefault(r => r.Layer == processedHeuristics.First().Layer);
-                
+                if (priorPeriod != null)
+                    priorPeriodActivatedDecisionOption = priorPeriod.DecisionOptionsHistories[site].Activated.FirstOrDefault(r => r.Layer == processedDecisionOptions.First().Layer);
+
                 //set anticipated influence before execute specific logic
                 anticipatedInfluence = agent.AnticipationInfluence;
 
                 SpecificLogic(processedGoal.Tendency);
 
-                //if none are identified, then choose the do-nothing heuristic.
-                if (heuristicForActivating == null)
+                //if none are identified, then choose the do-nothing decisionOption.
+                if (decisionOptionForActivating == null)
                 {
                     try
                     {
-                        heuristicForActivating = processedHeuristics.Single(h => h.IsAction == false);
+                        decisionOptionForActivating = processedDecisionOptions.Single(h => h.IsAction == false);
                     }
                     catch (InvalidOperationException)
                     {
-                        throw new SosielAlgorithmException(string.Format("Heuristic for activating hasn't been found by {0}", agent.Id));
+                        throw new SosielAlgorithmException(string.Format("Decision option for activating hasn't been found by {0}", agent.Id));
                     }
                 }
             }
             else
-                heuristicForActivating = matchedHeuristics[0];
+                decisionOptionForActivating = matchedDecisionOptions[0];
 
-            if (processedHeuristics.First().Layer.Set.Layers.Count > 1)
-                heuristicForActivating.Apply(agent);
+            if (processedDecisionOptions.First().Layer.Set.Layers.Count > 1)
+                decisionOptionForActivating.Apply(agent);
 
 
-            if (heuristicForActivating.IsCollectiveAction)
+            if (decisionOptionForActivating.IsCollectiveAction)
             {
-                ShareCollectiveAction(agent, heuristicForActivating, lastIteration.Value);
+                ShareCollectiveAction(agent, decisionOptionForActivating, lastIteration.Value);
             }
 
 
-            history.Activated.Add(heuristicForActivating);
-            history.Matched.AddRange(matchedHeuristics);
+            history.Activated.Add(decisionOptionForActivating);
+            history.Matched.AddRange(matchedDecisionOptions);
         }
 
         /// <summary>
@@ -235,38 +235,38 @@ namespace Common.Processes
         /// <param name="agent"></param>
         /// <param name="lastIteration"></param>
         /// <param name="rankedGoals"></param>
-        /// <param name="processedHeuristics"></param>
+        /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
         public void ExecutePartII(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration,
-            Goal[] rankedGoals, KnowledgeHeuristic[] processedHeuristics, Site site)
+            Goal[] rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
         {
             AgentState agentState = lastIteration.Value[agent];
 
-            KnowledgeHeuristicsHistory history = agentState.HeuristicHistories[site];
+            DecisionOptionsHistory history = agentState.DecisionOptionsHistories[site];
 
-            KnowledgeHeuristicsLayer layer = processedHeuristics.First().Layer;
+            DecisionOptionLayer layer = processedDecisionOptions.First().Layer;
 
 
-            KnowledgeHeuristic selectedHeuristic = history.Activated.Single(r => r.Layer == layer);
+            DecisionOption selectedDecisionOptions = history.Activated.Single(r => r.Layer == layer);
 
-            if (selectedHeuristic.IsCollectiveAction)
+            if (selectedDecisionOptions.IsCollectiveAction)
             {
-                //counting agents which selected this heuristic
-                int numberOfInvolvedAgents = agent.ConnectedAgents.Where(connected=> agent[SosielVariables.Network] == connected[SosielVariables.Network])
-                    .Count(a=> lastIteration.Value[a].HeuristicHistories[site].Activated.Any(heuristic=> heuristic == selectedHeuristic));
+                //counting agents which selected this decision option
+                int numberOfInvolvedAgents = agent.ConnectedAgents.Where(connected => agent[SosielVariables.Network] == connected[SosielVariables.Network])
+                    .Count(a => lastIteration.Value[a].DecisionOptionsHistories[site].Activated.Any(decisionOption => decisionOption == selectedDecisionOptions));
 
-                int requiredParticipants = selectedHeuristic.RequiredParticipants - 1;
+                int requiredParticipants = selectedDecisionOptions.RequiredParticipants - 1;
 
-                //add heuristic to blocked heuristics
+                //add decision option to blocked
                 if (numberOfInvolvedAgents < requiredParticipants)
                 {
-                    history.BlockedHeuristics.Add(selectedHeuristic);
+                    history.Blocked.Add(selectedDecisionOptions);
 
-                    history.Activated.Remove(selectedHeuristic);
+                    history.Activated.Remove(selectedDecisionOptions);
 
-                    ExecutePartI(agent, lastIteration, rankedGoals, processedHeuristics, site);
+                    ExecutePartI(agent, lastIteration, rankedGoals, processedDecisionOptions, site);
 
-                    ExecutePartII(agent, lastIteration, rankedGoals, processedHeuristics, site);
+                    ExecutePartII(agent, lastIteration, rankedGoals, processedDecisionOptions, site);
                 }
             }
         }

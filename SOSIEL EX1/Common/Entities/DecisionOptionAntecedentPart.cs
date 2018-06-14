@@ -8,10 +8,8 @@ namespace Common.Entities
     using Environments;
     using Helpers;
 
-    public class KnowledgeHeuristicAntecedentPart : ICloneable<KnowledgeHeuristicAntecedentPart>, IEquatable<KnowledgeHeuristicAntecedentPart>
+    public class DecisionOptionAntecedentPart : ICloneable<DecisionOptionAntecedentPart>, IEquatable<DecisionOptionAntecedentPart>
     {
-
-
         private Func<dynamic, dynamic, dynamic> antecedent;
 
         public string Param { get; private set; }
@@ -23,7 +21,7 @@ namespace Common.Entities
         public string ReferenceVariable { get; private set; }
 
 
-        public KnowledgeHeuristicAntecedentPart(string param, string sign, dynamic value, string referenceVariable = null)
+        public DecisionOptionAntecedentPart(string param, string sign, dynamic value, string referenceVariable = null)
         {
             Param = param;
             Sign = sign;
@@ -65,9 +63,9 @@ namespace Common.Entities
         /// Creates shallow object copy 
         /// </summary>
         /// <returns></returns>
-        public KnowledgeHeuristicAntecedentPart Clone()
+        public DecisionOptionAntecedentPart Clone()
         {
-            return (KnowledgeHeuristicAntecedentPart)MemberwiseClone();
+            return (DecisionOptionAntecedentPart)MemberwiseClone();
         }
 
         /// <summary>
@@ -76,9 +74,9 @@ namespace Common.Entities
         /// <param name="old"></param>
         /// <param name="newConst"></param>
         /// <returns></returns>
-        public static KnowledgeHeuristicAntecedentPart Renew(KnowledgeHeuristicAntecedentPart old, dynamic newConst)
+        public static DecisionOptionAntecedentPart Renew(DecisionOptionAntecedentPart old, dynamic newConst)
         {
-            KnowledgeHeuristicAntecedentPart newAntecedent = old.Clone();
+            DecisionOptionAntecedentPart newAntecedent = old.Clone();
 
             newAntecedent.antecedent = null;
 
@@ -88,11 +86,11 @@ namespace Common.Entities
         }
 
         /// <summary>
-        /// Compares two KnowledgeHeuristicAntecedentPart objects
+        /// Compares two DecisionOptionAntecedentPart objects
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(KnowledgeHeuristicAntecedentPart other)
+        public bool Equals(DecisionOptionAntecedentPart other)
         {
             //check on reference equality first
             //custom logic for comparing two objects
@@ -103,7 +101,7 @@ namespace Common.Entities
         public override bool Equals(object obj)
         {
             //check on reference equality first
-            return base.Equals(obj) || Equals(obj as KnowledgeHeuristicAntecedentPart);
+            return base.Equals(obj) || Equals(obj as DecisionOptionAntecedentPart);
         }
 
         public override int GetHashCode()
@@ -112,7 +110,7 @@ namespace Common.Entities
             return 0;
         }
 
-        public static bool operator ==(KnowledgeHeuristicAntecedentPart a, KnowledgeHeuristicAntecedentPart b)
+        public static bool operator ==(DecisionOptionAntecedentPart a, DecisionOptionAntecedentPart b)
         {
             if (Object.ReferenceEquals(a, b))
             {
@@ -128,7 +126,7 @@ namespace Common.Entities
             return a.Equals(b);
         }
 
-        public static bool operator !=(KnowledgeHeuristicAntecedentPart a, KnowledgeHeuristicAntecedentPart b)
+        public static bool operator !=(DecisionOptionAntecedentPart a, DecisionOptionAntecedentPart b)
         {
             return !(a == b);
         }

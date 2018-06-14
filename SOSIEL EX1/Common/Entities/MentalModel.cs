@@ -12,27 +12,27 @@ namespace Common.Entities
         int layerIndexer = 0;
 
         public int PositionNumber { get; set; }
-        public List<KnowledgeHeuristicsLayer> Layers { get; private set; } 
+        public List<DecisionOptionLayer> Layers { get; private set; } 
 
         public Goal[] AssociatedWith { get; private set; }
 
         private MentalModel(int number, Goal[] associatedGoals)
         {
             PositionNumber = number;
-            Layers = new List<KnowledgeHeuristicsLayer>();
+            Layers = new List<DecisionOptionLayer>();
             AssociatedWith = associatedGoals;
         }
 
-        public MentalModel(int number, Goal[] associatedGoals, IEnumerable<KnowledgeHeuristicsLayer> layers) :this(number, associatedGoals)
+        public MentalModel(int number, Goal[] associatedGoals, IEnumerable<DecisionOptionLayer> layers) :this(number, associatedGoals)
         {
             layers.ForEach(l => Add(l));
         }
 
         /// <summary>
-        /// Adds layer to the heuristic set.
+        /// Adds layer to the decision option set.
         /// </summary>
         /// <param name="layer"></param>
-        public void Add(KnowledgeHeuristicsLayer layer)
+        public void Add(DecisionOptionLayer layer)
         {
             layerIndexer++;
             layer.Set = this;
@@ -42,9 +42,9 @@ namespace Common.Entities
         }
 
 
-        public IEnumerable<KnowledgeHeuristic> AsHeuristicEnumerable()
+        public IEnumerable<DecisionOption> AsDecisionOptionEnumerable()
         {
-            return Layers.SelectMany(rl => rl.KnowledgeHeuristics);
+            return Layers.SelectMany(rl => rl.DecisionOptions);
         }
 
         public int CompareTo(MentalModel other)

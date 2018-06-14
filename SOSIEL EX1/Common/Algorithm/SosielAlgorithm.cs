@@ -145,10 +145,10 @@ namespace Common.Algorithm
         {
             agentList.ActiveAgents.ForEach(a =>
             {
-                //increment heuristic activation freshness
-                a.KnowledgeHeuristicActivationFreshness.Keys.ToArray().ForEach(k =>
+                //increment decision option activation freshness
+                a.DecisionOptionActivationFreshness.Keys.ToArray().ForEach(k =>
                 {
-                    a.KnowledgeHeuristicActivationFreshness[k] += 1;
+                    a.DecisionOptionActivationFreshness[k] += 1;
                 });
             });
         }
@@ -224,7 +224,7 @@ namespace Common.Algorithm
                                         {
                                             BeforeCounterfactualThinking(agent, site);
 
-                                            foreach (var set in agent.AssignedKnowledgeHeuristics.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                            foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
                                             {
                                                 //optimization
                                                 Goal selectedGoal = rankedGoals[agent].First(g => set.Key.AssociatedWith.Contains(g));
@@ -233,25 +233,25 @@ namespace Common.Algorithm
 
                                                 if (selectedGoalState.Confidence == false)
                                                 {
-                                                    foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<KnowledgeHeuristicsLayer, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                                    foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
                                                     {
                                                         if (layer.Key.LayerConfiguration.Modifiable || (!layer.Key.LayerConfiguration.Modifiable && layer.Any(r => r.IsModifiable)))
                                                         {
-                                                            //looking for matched heuristics in prior period
-                                                            KnowledgeHeuristic[] matchedPriorPeriodHeuristics = priorIteration[agent].HeuristicHistories[site]
+                                                            //looking for matched decision option in prior period
+                                                            DecisionOption[] matchedDecisionOptions = priorIteration[agent].DecisionOptionsHistories[site]
                                                                     .Matched.Where(h => h.Layer == layer.Key).ToArray();
 
                                                             bool? CTResult = null;
 
                                                             //counterfactual thinking process
-                                                            if (matchedPriorPeriodHeuristics.Length >= 2)
-                                                                CTResult = ct.Execute(agent, iterations.Last, selectedGoal, matchedPriorPeriodHeuristics, layer.Key, site);
+                                                            if (matchedDecisionOptions.Length >= 2)
+                                                                CTResult = ct.Execute(agent, iterations.Last, selectedGoal, matchedDecisionOptions, layer.Key, site);
 
 
                                                             if (processConfiguration.InnovationEnabled)
                                                             {
                                                                 //innovation process
-                                                                if (CTResult == false || matchedPriorPeriodHeuristics.Length < 2)
+                                                                if (CTResult == false || matchedDecisionOptions.Length < 2)
                                                                     it.Execute(agent, iterations.Last, selectedGoal, layer.Key, site);
                                                             }
                                                         }
@@ -273,7 +273,7 @@ namespace Common.Algorithm
 
                             foreach (IAgent agent in agentGroup)
                             {
-                                foreach (var set in agent.AssignedKnowledgeHeuristics.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
+                                foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                 {
                                     foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                     {
@@ -286,7 +286,7 @@ namespace Common.Algorithm
 
                     }
 
-                    if (processConfiguration.HeuristicSelectionEnabled)
+                    if (processConfiguration.DecisionOptionSelectionEnabled)
                     {
                         //AS part I
                         foreach (var agentGroup in agentGroups)
@@ -295,9 +295,9 @@ namespace Common.Algorithm
                             {
                                 foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                 {
-                                    foreach (var set in agent.AssignedKnowledgeHeuristics.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                    foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
                                     {
-                                        foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<KnowledgeHeuristicsLayer, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                        foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
                                         {
 
                                             BeforeActionSelection(agent, site);
@@ -312,7 +312,7 @@ namespace Common.Algorithm
                         }
 
 
-                        if (processConfiguration.HeuristicSelectionPart2Enabled && iterationCounter > 1)
+                        if (processConfiguration.DecisionOptionSelectionPart2Enabled && iterationCounter > 1)
                         {
                             //4th round: AS part II
                             foreach (var agentGroup in agentGroups)
@@ -321,9 +321,9 @@ namespace Common.Algorithm
                                 {
                                     foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                     {
-                                        foreach (var set in agent.AssignedKnowledgeHeuristics.GroupBy(r => r.Layer.Set).OrderBy((IGrouping<MentalModel, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                        foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
                                         {
-                                            foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<KnowledgeHeuristicsLayer, KnowledgeHeuristic> g) => g.Key.PositionNumber))
+                                            foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
                                             {
                                                 BeforeActionSelection(agent, site);
 
@@ -358,7 +358,7 @@ namespace Common.Algorithm
 
                     if (processConfiguration.AlgorithmStopIfAllAgentsSelectDoNothing && iterationCounter > 1)
                     {
-                        if (currentIteration.SelectMany(kvp => kvp.Value.HeuristicHistories.Values.SelectMany(rh => rh.Activated)).All(r => r.IsAction == false))
+                        if (currentIteration.SelectMany(kvp => kvp.Value.DecisionOptionsHistories.Values.SelectMany(rh => rh.Activated)).All(r => r.IsAction == false))
                         {
                             algorithmStoppage = true;
                         }

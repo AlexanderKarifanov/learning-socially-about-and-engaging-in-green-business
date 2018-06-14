@@ -48,10 +48,10 @@
         }
       },
 
-      "KnowledgeHeuristics": [
+      "DecisionOptions": [
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 1,
           "Id": "MM1_L1_KH1",
           "Antecedent": [
@@ -70,7 +70,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 2,
           "Id": "MM1_L1_KH2",
           "Antecedent": [
@@ -109,7 +109,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 3,
           "Id": "MM1_L1_KH3",
           "Antecedent": [
@@ -144,7 +144,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 4,
           "Id": "MM1_L1_KH4",
           "Antecedent": [
@@ -164,7 +164,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 5,
           "Id": "MM1_L1_KH5",
           "Antecedent": [
@@ -184,7 +184,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 6,
           "Id": "MM1_L1_KH6",
           "Antecedent": [
@@ -219,7 +219,7 @@
         },
         {
           "MentalModel": 1,
-          "KnowledgeHeuristicsLayer": 1,
+          "DecisionOptionsLayer": 1,
           "PositionNumber": 7,
           "Id": "MM1_L1_KH7",
           "Antecedent": [
@@ -290,7 +290,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH4",
@@ -344,7 +344,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH4",
@@ -398,7 +398,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH4",
@@ -452,7 +452,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH3",
@@ -506,7 +506,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH3",
@@ -547,7 +547,7 @@
             "G3": 500
           }
         },
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH7"
         ],
@@ -597,7 +597,7 @@
           }
         },
 
-        "AssignedKnowledgeHeuristics": [
+        "AssignedDecisionOptions": [
           "MM1_L1_KH1",
           "MM1_L1_KH2",
           "MM1_L1_KH3",

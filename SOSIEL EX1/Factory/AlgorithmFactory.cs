@@ -1,6 +1,6 @@
 ﻿using Common.Algorithm;
-using SHELite;
-using SHELite.Configuration;
+using SOSIEL_EX1;
+using SOSIEL_EX1.Configuration;
 
 namespace Factory
 {
@@ -10,7 +10,7 @@ namespace Factory
         {
             ConfigurationModel algorithmConfig = ConfigurationParser.ParseConfiguration(path);
 
-            return new SHELiteAlgorithm(algorithmConfig);
+            return new Algorithm(algorithmConfig);
         }
     }
 }
