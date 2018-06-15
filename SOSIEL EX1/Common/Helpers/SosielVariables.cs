@@ -5,7 +5,7 @@ namespace Common.Helpers
     /// <summary>
     /// Contains variable names used in code.
     /// </summary>
-    public static class SosielVariables
+    public class SosielVariables
     {
         public const string AgentType = "AgentType";
         public const string AgentStatus = "AgentStatus";

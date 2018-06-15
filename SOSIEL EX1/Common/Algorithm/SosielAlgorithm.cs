@@ -24,6 +24,7 @@ namespace Common.Algorithm
         protected LinkedList<Dictionary<IAgent, AgentState>> iterations = new LinkedList<Dictionary<IAgent, AgentState>>();
         protected Dictionary<IAgent, Goal[]> rankedGoals;
 
+        protected Probabilities probabilities = new Probabilities();
 
         //processes
         AnticipatoryLearning al = new AnticipatoryLearning();

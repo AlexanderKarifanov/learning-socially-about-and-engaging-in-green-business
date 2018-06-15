@@ -1,6 +1,35 @@
 ﻿{
   "AlgorithmConfiguration": {
-    "NumberOfIterations": 10
+    "NumberOfIterations": 10,
+
+    "DemographicConfiguration": {
+      "MaximumAge": 110,
+      "DeathProbability": "Death",
+      "BirthProbability": "Birth",
+      "AdoptionProbability": "Birth",
+      "PairingProbability": 0.5,
+      "SexualOrientationRate": 0.1,
+      "HomosexualTypeRate": 0.5,
+      "PairingAgeMin": 18,
+      "PairingAgeMax": 50,
+      "YearsBetweenBirths": 2,
+      "MinimumAgeForHouseholdHead": 18
+    },
+
+    "ProbabilitiesConfiguration": [
+      {
+        "Variable": "Birth",
+        "VariableType": "integer",
+        "FilePath": "birth_probability.csv",
+        "WithHeader": true
+      },
+      {
+        "Variable": "Death",
+        "VariableType": "integer",
+        "FilePath": "death_probability.csv",
+        "WithHeader": true
+      }
+    ]
   },
 
   "AgentConfiguration": {
@@ -266,7 +295,7 @@
           "Gender": "male",
           "Disability": false,
           "HouseholdSavings": 100000,
-          "Expenses": 2000 
+          "Expenses": 2000
         },
 
         "AnticipatedInfluenceState": {

@@ -1,12 +1,12 @@
-﻿namespace SOSIEL_EX1
+﻿using Common.Helpers;
+
+namespace SOSIEL_EX1
 {
     /// <summary>
     /// Contains variable names used in code.
     /// </summary>
-    public static class AlgorithmVariables
+    public class AlgorithmVariables: SosielVariables
     {
-        public static string AgentStatus = "AgentStatus";
-
         public const string AgentIncome = "Income";
         public const string AgentExpenses = "Expenses";
         public const string AgentSavings = "Savings";

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common.Configuration;
 using Common.Entities;
 using Newtonsoft.Json;
 
@@ -17,6 +18,5 @@ namespace SOSIEL_EX1.Configuration
 
         [JsonRequired]
         public InitialStateConfiguration InitialState { get; set; }
-
     }
 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\SosielAlgorithm.cs" />
+    <Compile Include="Configuration\DemographicProcessesConfiguration.cs" />
     <Compile Include="Configuration\ProcessesConfiguration.cs" />
     <Compile Include="Entities\Agent.cs" />
     <Compile Include="Entities\AgentList.cs" />
@@ -66,6 +67,8 @@
     <Compile Include="Entities\DecisionOptionLayerConfiguration.cs" />
     <Compile Include="Entities\MentalModel.cs" />
     <Compile Include="Entities\MentalModelConfiguration.cs" />
+    <Compile Include="Entities\Probabilities.cs" />
+    <Compile Include="Entities\ProbabilityTable.cs" />
     <Compile Include="Entities\Site.cs" />
     <Compile Include="Entities\SiteList.cs" />
     <Compile Include="Entities\TakenAction.cs" />
@@ -84,12 +87,15 @@
     <Compile Include="Helpers\AntecedentBuilder.cs" />
     <Compile Include="Helpers\IEnumerableHelper.cs" />
     <Compile Include="Helpers\RandomizeHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
+    <Compile Include="Helpers\SosielProbabilityTables.cs" />
     <Compile Include="Helpers\SosielVariables.cs" />
-    <Compile Include="Helpers\WriteToCSVHelper.cs" />
+    <Compile Include="Helpers\CSVHelper.cs" />
     <Compile Include="Processes\ActionSelection.cs" />
     <Compile Include="Processes\ActionTaking.cs" />
     <Compile Include="Processes\AnticipatoryLearning.cs" />
     <Compile Include="Processes\CounterfactualThinking.cs" />
+    <Compile Include="Processes\Demographic\Demographic.cs" />
     <Compile Include="Processes\Innovation.cs" />
     <Compile Include="Processes\SocialLearning.cs" />
     <Compile Include="Processes\VolatileProcess.cs" />
@@ -101,13 +107,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.Increment.DayStamp" BuildVersion_ConfigurationName="Any" BuildVersion_BuildAction="Both" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_StartDate="2017/3/6" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2017/3/6" BuildVersion_AssemblyInfoFilename="Properties\AssemblyInfo.cs" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildAction="Both" BuildVersion_ConfigurationName="Any" BuildVersion_BuildVersioningStyle="None.None.Increment.DayStamp" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

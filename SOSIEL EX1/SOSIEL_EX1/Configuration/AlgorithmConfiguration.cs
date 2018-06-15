@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common.Configuration;
+using Newtonsoft.Json;
 
 namespace SOSIEL_EX1.Configuration
 {
@@ -9,5 +10,9 @@ namespace SOSIEL_EX1.Configuration
     {
         [JsonRequired]
         public int NumberOfIterations { get; set; }
+
+        public DemographicProcessesConfiguration DemographicConfiguration { get; set; }
+
+        public ProbabilitiesConfiguration[] ProbabilitiesConfiguration { get; set; }
     }
 }

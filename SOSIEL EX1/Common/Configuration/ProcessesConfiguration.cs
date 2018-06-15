@@ -36,6 +36,8 @@ namespace Common.Configuration
 
         public bool AlgorithmStopIfAllAgentsSelectDoNothing { get; set; }
 
+        public bool ChangePopulationEnabled { get; set; }
+
 
 
         /// <summary>
@@ -83,7 +85,8 @@ namespace Common.Configuration
                         CounterfactualThinkingEnabled = true,
                         InnovationEnabled = true,
                         ReproductionEnabled = true,
-                        AgentRandomizationEnabled = true
+                        AgentRandomizationEnabled = true,
+                        ChangePopulationEnabled = true
                     };
 
                 default:

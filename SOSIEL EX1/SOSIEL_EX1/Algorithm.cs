@@ -8,13 +8,14 @@ using Common.Entities;
 using Common.Exceptions;
 using Common.Helpers;
 using SOSIEL_EX1.Configuration;
+using SOSIEL_EX1.Helpers;
 using SOSIEL_EX1.Output;
 
 namespace SOSIEL_EX1
 {
     public sealed class Algorithm : SosielAlgorithm, IAlgorithm
     {
-        public string Name { get { return "Cognitive level 4 SHE Lite"; } }
+        public string Name { get { return "SOSIEL"; } }
 
         string _outputFolder;
 
@@ -70,6 +71,8 @@ namespace SOSIEL_EX1
         public void Initialize()
         {
             InitializeAgents();
+
+            InitializeProbabilities();
 
             AfterInitialization();
         }
@@ -155,6 +158,24 @@ namespace SOSIEL_EX1
             agentList = new AgentList(agents, agentPrototypes.Select(kvp => kvp.Value).ToList());
         }
 
+        private void InitializeProbabilities()
+        {
+            var probabilitiesList = new Probabilities();
+
+            foreach (var probabilityElementConfiguration in _configuration.AlgorithmConfiguration.ProbabilitiesConfiguration)
+            {
+                var variableType = VariableTypeHelper.ConvertStringToType(probabilityElementConfiguration.VariableType);
+                var parseTableMethod = ReflectionHelper.GetGenerecMethod(variableType, typeof(ProbabilityTableParser), "Parse");
+
+                dynamic table = parseTableMethod.Invoke(null, new object[] { probabilityElementConfiguration.FilePath, probabilityElementConfiguration.WithHeader });
+
+                var addToListMethod =
+                    ReflectionHelper.GetGenerecMethod(variableType, typeof(Probabilities), "AddProbabilityTable");
+
+                addToListMethod.Invoke(probabilitiesList, new object[] { probabilityElementConfiguration.Variable, table});
+            }
+        }
+
         protected override void AfterInitialization()
         {
             base.AfterInitialization();
@@ -192,15 +213,7 @@ namespace SOSIEL_EX1
             return states;
         }
 
-        /// <inheritdoc />
-        protected override void PostIterationCalculations(int iteration)
-        {
-            base.PostIterationCalculations(iteration);
-
-            
-        }
-
-        protected override void PreIterationCalculations(int iteration)
+       protected override void PreIterationCalculations(int iteration)
         {
             base.PreIterationCalculations(iteration);
 
@@ -260,7 +273,7 @@ namespace SOSIEL_EX1
                     NumberOfKH = agent.AssignedDecisionOptions.Count
                 };
 
-                WriteToCSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);
+                CSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);
             });
         }
     }

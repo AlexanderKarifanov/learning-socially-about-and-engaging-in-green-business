@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using System.Globalization;
 using System.IO;
-
+using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
@@ -22,19 +21,48 @@ namespace Common.Helpers
         }
     }
 
-
-
-    public static class WriteToCSVHelper
+    /// <summary>
+    /// Helper class for working with CSV files.
+    /// </summary>
+    public static class CSVHelper
     {
-        private static CsvConfiguration configuration = new CsvConfiguration() { CultureInfo = CultureInfo.CurrentCulture, HasHeaderRecord = false };
+        private static CsvConfiguration GetDefaultConfiguration()
+        {
+            return new CsvConfiguration() { CultureInfo = CultureInfo.InvariantCulture, HasHeaderRecord = false };
+        }
 
-
-        static WriteToCSVHelper()
+        static CSVHelper()
         {
             TypeConverterFactory.AddConverter<string[]>(new EnumerableConverter<string>());
         }
 
+        /// <summary>
+        /// Reads all records in file.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="headerRecortExist">if set to <c>true</c> [header recort exist].</param>
+        /// <param name="mappingClass">The mapping class.</param>
+        /// <returns></returns>
+        public static List<T> ReadAllRecords<T>(string filePath, bool headerRecortExist = false, Type mappingClass = null)
+        {
+            var configuration = GetDefaultConfiguration();
 
+            if (mappingClass != null)
+            {
+                configuration.RegisterClassMap(mappingClass);
+            }
+
+            using (FileStream fs = File.Open(filePath, FileMode.Open))
+            using (StreamReader sr = new StreamReader(fs))
+            using (CsvReader csv = new CsvReader(sr, configuration))
+            {
+                csv.Read();
+
+                var records = csv.GetRecords<T>();
+                return records.ToList();
+            }
+        }
 
         /// <summary>
         /// Appends record to the file end or creates new file and writes record there.
@@ -44,7 +72,8 @@ namespace Common.Helpers
         /// <param name="record"></param>
         public static void AppendTo<T>(string filePath, T record)
         {
-            bool isFileExist = File.Exists(filePath);
+            var configuration = GetDefaultConfiguration();
+            var isFileExist = File.Exists(filePath);
 
             using (FileStream fs = File.Open(filePath, isFileExist ? FileMode.Append : FileMode.Create))
             using (StreamWriter sw = new StreamWriter(fs))
@@ -70,7 +99,8 @@ namespace Common.Helpers
         /// <param name="records"></param>
         public static void AppendTo<T>(string filePath, IEnumerable<T> records)
         {
-            bool isFileExist = File.Exists(filePath);
+            var configuration = GetDefaultConfiguration();
+            var isFileExist = File.Exists(filePath);
 
             using (FileStream fs = File.Open(filePath, isFileExist ? FileMode.Append : FileMode.Create))
             using (StreamWriter sw = new StreamWriter(fs))
