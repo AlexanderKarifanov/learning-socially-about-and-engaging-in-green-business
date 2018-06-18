@@ -17,8 +17,6 @@ namespace SOSIEL_EX1.Configuration
         [JsonRequired]
         public Dictionary<string, dynamic> PrivateVariables { get; set; }
 
-        public Dictionary<string, string> VariablesTransform { get; set; }
-
         [JsonRequired]
         public Dictionary<string, Dictionary<string, double>> AnticipatedInfluenceState { get; set; }
 
@@ -32,7 +30,5 @@ namespace SOSIEL_EX1.Configuration
 
         [JsonRequired]
         public Dictionary<string, GoalStateConfiguration> GoalsState { get; set; }
-
-        public string[] SocialNetwork { get; set; }
     }
 }

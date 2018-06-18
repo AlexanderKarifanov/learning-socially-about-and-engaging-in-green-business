@@ -59,6 +59,7 @@
     <Compile Include="Configuration\GoalStateConfiguration.cs" />
     <Compile Include="Configuration\InitialStateConfiguration.cs" />
     <Compile Include="Configuration\ProbabilitiesConfiguration.cs" />
+    <Compile Include="Helpers\DictionaryHelper.cs" />
     <Compile Include="Helpers\ProbabilityTableParser.cs" />
     <Compile Include="Helpers\VariableTypeHelper.cs" />
     <Compile Include="Models\ProbabilityRecord.cs" />

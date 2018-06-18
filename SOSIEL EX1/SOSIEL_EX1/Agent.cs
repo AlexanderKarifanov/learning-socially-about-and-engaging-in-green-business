@@ -19,6 +19,13 @@ namespace SOSIEL_EX1
             return agent;
         }
 
+        public override Common.Entities.Agent CreateChild(string gender)
+        {
+            Agent child = (Agent)base.Clone();
+
+            return child;
+        }
+
         public void GenerateCustomParams()
         {
             

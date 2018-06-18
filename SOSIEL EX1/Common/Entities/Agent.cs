@@ -105,6 +105,28 @@ namespace Common.Entities
             return agent;
         }
 
+        public virtual Agent CreateChild(string gender)
+        {
+            Agent agent = new Agent();
+
+            agent.Prototype = Prototype;
+            agent.privateVariables = new Dictionary<string, dynamic>(privateVariables);
+
+            agent.privateVariables[SosielVariables.Age] = 0;
+            agent.privateVariables[SosielVariables.Gender] = gender;
+            agent.privateVariables[SosielVariables.PairStatus] = PairStatus.Unpaired;
+
+            agent.privateVariables.Remove(SosielVariables.ExternalRelations);
+
+            agent.AssignedGoals = new List<Goal>(AssignedGoals);
+            agent.AssignedDecisionOptions = new List<DecisionOption>();
+            
+            agent.AnticipationInfluence = new Dictionary<DecisionOption, Dictionary<Goal, double>>();
+            agent.DecisionOptionActivationFreshness = new Dictionary<DecisionOption, int>();
+
+            return agent;
+        }
+        
 
         /// <summary>
         /// Checks on parameter existence 

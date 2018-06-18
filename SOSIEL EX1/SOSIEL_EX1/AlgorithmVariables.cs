@@ -11,7 +11,6 @@ namespace SOSIEL_EX1
         public const string AgentExpenses = "Expenses";
         public const string AgentSavings = "Savings";
 
-        public const string Household = "Household";
         public const string HouseholdIncome = "HouseholdIncome";
         public const string HouseholdExpenses = "HouseholdExpenses";
         public const string HouseholdSavings = "HouseholdSavings";

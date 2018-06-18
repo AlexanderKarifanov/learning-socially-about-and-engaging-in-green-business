@@ -117,5 +117,29 @@ namespace Common.Entities
 
             return agentState;
         }
+
+
+        public AgentState CreateChildCopy()
+        {
+            var copy = Create(IsSiteOriented);
+
+            foreach (var state in GoalsState)
+            {
+                var value = state.Value;
+                copy.GoalsState.Add(state.Key, new GoalState(0, value.FocalValue, value.Importance));
+            }
+
+            foreach (var decisionOptionsHistory in DecisionOptionsHistories)
+            {
+                copy.DecisionOptionsHistories.Add(decisionOptionsHistory.Key, new DecisionOptionsHistory());
+            }
+
+            foreach (var takenAction in TakenActions)
+            {
+                copy.TakenActions.Add(takenAction.Key, new List<TakenAction>());
+            }
+
+            return copy;
+        }
     }
 }

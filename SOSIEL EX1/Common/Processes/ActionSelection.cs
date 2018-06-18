@@ -153,7 +153,7 @@ namespace Common.Processes
         void ShareCollectiveAction(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState> agentStates)
         {
             foreach (IAgent neighbour in currentAgent.ConnectedAgents
-                .Where(connected => connected[SosielVariables.Network] == currentAgent[SosielVariables.Network]))
+                .Where(connected => connected[SosielVariables.Household] == currentAgent[SosielVariables.Household]))
             {
                 if (neighbour.AssignedDecisionOptions.Contains(decisionOption) == false)
                 {
@@ -252,7 +252,7 @@ namespace Common.Processes
             if (selectedDecisionOptions.IsCollectiveAction)
             {
                 //counting agents which selected this decision option
-                int numberOfInvolvedAgents = agent.ConnectedAgents.Where(connected => agent[SosielVariables.Network] == connected[SosielVariables.Network])
+                int numberOfInvolvedAgents = agent.ConnectedAgents.Where(connected => agent[SosielVariables.Household] == connected[SosielVariables.Household])
                     .Count(a => lastIteration.Value[a].DecisionOptionsHistories[site].Activated.Any(decisionOption => decisionOption == selectedDecisionOptions));
 
                 int requiredParticipants = selectedDecisionOptions.RequiredParticipants - 1;

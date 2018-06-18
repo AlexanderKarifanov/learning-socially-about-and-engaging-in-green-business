@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-using System.Threading.Tasks;
+using Common.Processes.Demographic;
 
 namespace Common.Algorithm
 {
@@ -10,7 +8,6 @@ namespace Common.Algorithm
     using Entities;
     using Helpers;
     using Processes;
-    using Exceptions;
 
     public abstract class SosielAlgorithm
     {
@@ -27,12 +24,14 @@ namespace Common.Algorithm
         protected Probabilities probabilities = new Probabilities();
 
         //processes
-        AnticipatoryLearning al = new AnticipatoryLearning();
-        CounterfactualThinking ct = new CounterfactualThinking();
-        Innovation it = new Innovation();
-        SocialLearning sl = new SocialLearning();
-        ActionSelection acts = new ActionSelection();
-        ActionTaking at = new ActionTaking();
+        protected AnticipatoryLearning al = new AnticipatoryLearning();
+        protected CounterfactualThinking ct = new CounterfactualThinking();
+        protected Innovation it = new Innovation();
+        protected SocialLearning sl = new SocialLearning();
+        protected ActionSelection acts = new ActionSelection();
+        protected ActionTaking at = new ActionTaking();
+
+        protected Demographic demographic;
 
 
         public SosielAlgorithm(int numberOfIterations, ProcessesConfiguration processConfiguration)

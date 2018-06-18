@@ -109,8 +109,7 @@ namespace SOSIEL_EX1
                 }
             });
 
-            Dictionary<string, List<Common.Entities.Agent>> networks = initialState.AgentsState.SelectMany(state => state.SocialNetwork ?? new string[0]).Distinct()
-                .ToDictionary(network => network, network => new List<Common.Entities.Agent>());
+            var networks = new Dictionary<string, List<Common.Entities.Agent>>();
 
             //create agents, groupby is used for saving agents numeration, e.g. FE1, HM1. HM2 etc
             initialState.AgentsState.GroupBy(state => state.PrototypeOfAgent).ForEach((agentStateGroup) =>
@@ -128,13 +127,20 @@ namespace SOSIEL_EX1
 
                         agents.Add(agent);
 
-                        //check social network and add to temp dictionary
-                        if (agentState.SocialNetwork != null)
-                        {
-                            //set first network to agent variables as household 
-                            agent[SosielVariables.Network] = agentState.SocialNetwork.First();
+                        string household = string.Format("H{0}", agent[AlgorithmVariables.Household]);
+                        string family = string.Format("F{0}", agent[AlgorithmVariables.NuclearFamily]);
 
-                            agentState.SocialNetwork.ForEach((network) => networks[network].Add(agent));
+                        networks.AddToDictionary(household, agent);
+                        networks.AddToDictionary(family, agent);
+
+                        if (agent.ContainsVariable(AlgorithmVariables.ExternalRelations))
+                        {
+                            var externals = (string)agent[AlgorithmVariables.ExternalRelations];
+
+                            foreach (var en in externals.Split(';'))
+                            {
+                                networks.AddToDictionary(en, agent);
+                            }
                         }
 
                         index++;
@@ -172,8 +178,10 @@ namespace SOSIEL_EX1
                 var addToListMethod =
                     ReflectionHelper.GetGenerecMethod(variableType, typeof(Probabilities), "AddProbabilityTable");
 
-                addToListMethod.Invoke(probabilitiesList, new object[] { probabilityElementConfiguration.Variable, table});
+                addToListMethod.Invoke(probabilitiesList, new object[] { probabilityElementConfiguration.Variable, table });
             }
+
+
         }
 
         protected override void AfterInitialization()
@@ -213,7 +221,7 @@ namespace SOSIEL_EX1
             return states;
         }
 
-       protected override void PreIterationCalculations(int iteration)
+        protected override void PreIterationCalculations(int iteration)
         {
             base.PreIterationCalculations(iteration);
 
@@ -223,13 +231,13 @@ namespace SOSIEL_EX1
                 //calculate household values (income, expenses, savings) for each agent in specific household
                 var hmAgents = agentList.GetAgentsWithPrefix("HM");
 
-                hmAgents.GroupBy(agent => agent[SosielVariables.Network])
+                hmAgents.GroupBy(agent => agent[SosielVariables.Household])
                     .ForEach(householdAgents =>
                     {
                         double householdIncome =
-                            householdAgents.Sum(agent => (double) agent[AlgorithmVariables.AgentIncome]);
+                            householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentIncome]);
                         double householdExpenses =
-                            householdAgents.Sum(agent => (double) agent[AlgorithmVariables.AgentExpenses]);
+                            householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentExpenses]);
                         double householdSavings = householdIncome - householdExpenses;
 
                         householdAgents.ForEach(agent =>

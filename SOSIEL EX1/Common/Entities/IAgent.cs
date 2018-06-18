@@ -69,5 +69,12 @@ namespace Common.Entities
         /// <param name="key"></param>
         /// <returns></returns>
         bool ContainsVariable(string key);
+
+        /// <summary>
+        /// Creates the child.
+        /// </summary>
+        /// <param name="gender">The gender.</param>
+        /// <returns></returns>
+        Agent CreateChild(string gender);
     }
 }

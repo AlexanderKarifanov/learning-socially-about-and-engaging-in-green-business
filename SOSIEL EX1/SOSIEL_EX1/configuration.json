@@ -295,7 +295,10 @@
           "Gender": "male",
           "Disability": false,
           "HouseholdSavings": 100000,
-          "Expenses": 2000
+          "Expenses": 2000,
+          "Household": "1",
+          "NuclearFamily": "1",
+          "PairStatus": "paired" 
         },
 
         "AnticipatedInfluenceState": {
@@ -335,9 +338,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H1" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
@@ -349,7 +350,11 @@
           "Gender": "female",
           "Disability": false,
           "HouseholdSavings": 100000,
-          "Expenses": 0
+          "Expenses": 0,
+          "Household": "1",
+          "NuclearFamily": "1",
+          "ExternalRelations": "church",
+          "PairStatus": "paired"
         },
 
         "AnticipatedInfluenceState": {
@@ -389,9 +394,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H1", "Church" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
@@ -403,7 +406,10 @@
           "Gender": "female",
           "Disability": false,
           "HouseholdSavings": 100000,
-          "Expenses": 0
+          "Expenses": 0,
+          "Household": "1",
+          "NuclearFamily": "1",
+          "PairStatus": "unpaired"
         },
 
         "AnticipatedInfluenceState": {
@@ -443,9 +449,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H1" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
@@ -457,7 +461,10 @@
           "Gender": "male",
           "Disability": false,
           "HouseholdSavings": 10000,
-          "Expenses": 2000
+          "Expenses": 2000,
+          "Household": "2",
+          "NuclearFamily": "2",
+          "PairStatus": "paired"
         },
 
         "AnticipatedInfluenceState": {
@@ -497,9 +504,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H2" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
@@ -511,7 +516,11 @@
           "Gender": "female",
           "Disability": false,
           "HouseholdSavings": 10000,
-          "Expenses": 0
+          "Expenses": 0,
+          "Household": "2",
+          "NuclearFamily": "2",
+          "ExternalRelations": "church",
+          "PairStatus": "paired"
         },
 
         "AnticipatedInfluenceState": {
@@ -551,9 +560,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H2", "Church" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
@@ -565,7 +572,10 @@
           "Gender": "male",
           "Disability": false,
           "HouseholdSavings": 10000,
-          "Expenses": 0
+          "Expenses": 0,
+          "Household": "2",
+          "NuclearFamily": "2",
+          "PairStatus": "unpaired"
         },
 
         "AnticipatedInfluenceState": {
@@ -602,7 +612,10 @@
           "Gender": "male",
           "Disability": true,
           "HouseholdSavings": 10000,
-          "Expenses": 0
+          "Expenses": 0,
+          "Household": "2",
+          "NuclearFamily": "2",
+          "PairStatus": "unpaired"
         },
 
         "AnticipatedInfluenceState": {
@@ -642,9 +655,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H2" ]
+        }
       }
 
     ]
