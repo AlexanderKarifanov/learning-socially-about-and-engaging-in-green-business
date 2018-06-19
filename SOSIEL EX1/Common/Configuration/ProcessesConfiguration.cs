@@ -38,7 +38,7 @@ namespace Common.Configuration
 
         public bool ChangePopulationEnabled { get; set; }
 
-
+        public bool UseDemographicProcesses { get; set; }
 
         /// <summary>
         /// Create processes configuration for specific cognitive level
@@ -85,8 +85,7 @@ namespace Common.Configuration
                         CounterfactualThinkingEnabled = true,
                         InnovationEnabled = true,
                         ReproductionEnabled = true,
-                        AgentRandomizationEnabled = true,
-                        ChangePopulationEnabled = true
+                        AgentRandomizationEnabled = true
                     };
 
                 default:

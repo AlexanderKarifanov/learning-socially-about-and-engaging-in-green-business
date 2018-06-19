@@ -7,7 +7,7 @@
       "DeathProbability": "Death",
       "BirthProbability": "Birth",
       "AdoptionProbability": "Birth",
-      "PairingProbability": 0.5,
+      "PairingProbability": 0.8,
       "SexualOrientationRate": 0.1,
       "HomosexualTypeRate": 0.5,
       "PairingAgeMin": 18,
@@ -290,7 +290,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 35,
           "Gender": "male",
           "Disability": false,
@@ -298,7 +297,8 @@
           "Expenses": 2000,
           "Household": "1",
           "NuclearFamily": "1",
-          "PairStatus": "paired" 
+          "PairStatus": "paired",
+          "HouseholdHead": true
         },
 
         "AnticipatedInfluenceState": {
@@ -345,7 +345,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 30,
           "Gender": "female",
           "Disability": false,
@@ -354,7 +353,8 @@
           "Household": "1",
           "NuclearFamily": "1",
           "ExternalRelations": "church",
-          "PairStatus": "paired"
+          "PairStatus": "paired",
+          "HouseholdHead": false
         },
 
         "AnticipatedInfluenceState": {
@@ -401,7 +401,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 75,
           "Gender": "female",
           "Disability": false,
@@ -409,7 +408,8 @@
           "Expenses": 0,
           "Household": "1",
           "NuclearFamily": "1",
-          "PairStatus": "unpaired"
+          "PairStatus": "unpaired",
+          "HouseholdHead": false
         },
 
         "AnticipatedInfluenceState": {
@@ -456,7 +456,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 40,
           "Gender": "male",
           "Disability": false,
@@ -464,7 +463,8 @@
           "Expenses": 2000,
           "Household": "2",
           "NuclearFamily": "2",
-          "PairStatus": "paired"
+          "PairStatus": "paired",
+          "HouseholdHead": true
         },
 
         "AnticipatedInfluenceState": {
@@ -511,7 +511,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 35,
           "Gender": "female",
           "Disability": false,
@@ -520,7 +519,8 @@
           "Household": "2",
           "NuclearFamily": "2",
           "ExternalRelations": "church",
-          "PairStatus": "paired"
+          "PairStatus": "paired",
+          "HouseholdHead": false
         },
 
         "AnticipatedInfluenceState": {
@@ -567,7 +567,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 14,
           "Gender": "male",
           "Disability": false,
@@ -575,7 +574,8 @@
           "Expenses": 0,
           "Household": "2",
           "NuclearFamily": "2",
-          "PairStatus": "unpaired"
+          "PairStatus": "unpaired",
+          "HouseholdHead": false
         },
 
         "AnticipatedInfluenceState": {
@@ -607,7 +607,6 @@
         "NumberOfAgents": 1,
 
         "PrivateVariables": {
-          "IsActive": true,
           "Age": 50,
           "Gender": "male",
           "Disability": true,
@@ -615,7 +614,118 @@
           "Expenses": 0,
           "Household": "2",
           "NuclearFamily": "2",
-          "PairStatus": "unpaired"
+          "PairStatus": "unpaired",
+          "HouseholdHead": false
+        },
+
+        "AnticipatedInfluenceState": {
+          "MM1_L1_KH1": {
+            "G3": 0
+          },
+          "MM1_L1_KH2": {
+            "G3": 3300
+          },
+          "MM1_L1_KH3": {
+            "G3": 16000
+          },
+          "MM1_L1_KH4": {
+            "G3": 1800
+          },
+          "MM1_L1_KH5": {
+            "G3": 1800
+          },
+          "MM1_L1_KH7": {
+            "G3": 500
+          }
+        },
+
+        "AssignedDecisionOptions": [
+          "MM1_L1_KH1",
+          "MM1_L1_KH2",
+          "MM1_L1_KH3",
+          "MM1_L1_KH4",
+          "MM1_L1_KH5",
+          "MM1_L1_KH7"
+        ],
+
+        "AssignedGoals": [ "G3" ],
+
+        "GoalsState": {
+          "G3": {
+            "Importance": 1,
+            "Value": 0
+          }
+        }
+      },
+      {
+        "PrototypeOfAgent": "HouseholdMember-Prototype",
+        "NumberOfAgents": 1,
+
+        "PrivateVariables": {
+          "Age": 30,
+          "Gender": "male",
+          "Disability": true,
+          "HouseholdSavings": 10000,
+          "Expenses": 0,
+          "Household": "3",
+          "NuclearFamily": "3",
+          "PairStatus": "unpaired",
+          "HouseholdHead": true
+        },
+
+        "AnticipatedInfluenceState": {
+          "MM1_L1_KH1": {
+            "G3": 0
+          },
+          "MM1_L1_KH2": {
+            "G3": 3300
+          },
+          "MM1_L1_KH3": {
+            "G3": 16000
+          },
+          "MM1_L1_KH4": {
+            "G3": 1800
+          },
+          "MM1_L1_KH5": {
+            "G3": 1800
+          },
+          "MM1_L1_KH7": {
+            "G3": 500
+          }
+        },
+
+        "AssignedDecisionOptions": [
+          "MM1_L1_KH1",
+          "MM1_L1_KH2",
+          "MM1_L1_KH3",
+          "MM1_L1_KH4",
+          "MM1_L1_KH5",
+          "MM1_L1_KH7"
+        ],
+
+        "AssignedGoals": [ "G3" ],
+
+        "GoalsState": {
+          "G3": {
+            "Importance": 1,
+            "Value": 0
+          }
+        }
+      },
+      {
+        "PrototypeOfAgent": "HouseholdMember-Prototype",
+        "NumberOfAgents": 1,
+
+        "PrivateVariables": {
+          "Age": 27,
+          "Gender": "female",
+          "Disability": true,
+          "HouseholdSavings": 10000,
+          "Expenses": 0,
+          "Household": "4",
+          "NuclearFamily": "4",
+          "PairStatus": "unpaired",
+          "HouseholdHead": true
         },
 
         "AnticipatedInfluenceState": {

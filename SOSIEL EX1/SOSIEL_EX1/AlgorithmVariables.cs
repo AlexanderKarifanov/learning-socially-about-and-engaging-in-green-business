@@ -16,8 +16,6 @@ namespace SOSIEL_EX1
         public const string HouseholdSavings = "HouseholdSavings";
 
 
-        public const string Age = "Age";
-
         public const string Mean = "Mean";
         public const string StdDev = "StdDev";
         

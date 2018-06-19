@@ -7,6 +7,7 @@ using Common.Configuration;
 using Common.Entities;
 using Common.Exceptions;
 using Common.Helpers;
+using Common.Processes;
 using SOSIEL_EX1.Configuration;
 using SOSIEL_EX1.Helpers;
 using SOSIEL_EX1.Output;
@@ -74,7 +75,18 @@ namespace SOSIEL_EX1
 
             InitializeProbabilities();
 
+            UseDemographic();
+
             AfterInitialization();
+        }
+
+        protected override void UseDemographic()
+        {
+            base.UseDemographic();
+
+            demographic = new Demographic(_configuration.AlgorithmConfiguration.DemographicConfiguration, 
+                probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.BirthProbabilityTable),
+                probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.DeathProbabilityTable));
         }
 
         /// <inheritdoc />
@@ -127,11 +139,8 @@ namespace SOSIEL_EX1
 
                         agents.Add(agent);
 
-                        string household = string.Format("H{0}", agent[AlgorithmVariables.Household]);
-                        string family = string.Format("F{0}", agent[AlgorithmVariables.NuclearFamily]);
-
-                        networks.AddToDictionary(household, agent);
-                        networks.AddToDictionary(family, agent);
+                        networks.AddToDictionary((string)agent[AlgorithmVariables.Household], agent);
+                        networks.AddToDictionary((string)agent[AlgorithmVariables.NuclearFamily], agent);
 
                         if (agent.ContainsVariable(AlgorithmVariables.ExternalRelations))
                         {
@@ -142,6 +151,9 @@ namespace SOSIEL_EX1
                                 networks.AddToDictionary(en, agent);
                             }
                         }
+
+                        //household and extended family are the same at the beginning
+                        agent[AlgorithmVariables.ExtendedFamily] = new List<string>() { (string)agent[AlgorithmVariables.Household] };
 
                         index++;
                     }
@@ -155,7 +167,7 @@ namespace SOSIEL_EX1
 
                 connectedAgents.ForEach(agent =>
                 {
-                    agent.ConnectedAgents.AddRange(connectedAgents.Where(a => a != agent));
+                    agent.ConnectedAgents.AddRange(connectedAgents.Where(a => a != agent).Except(agent.ConnectedAgents));
                 });
 
             });
@@ -181,7 +193,7 @@ namespace SOSIEL_EX1
                 addToListMethod.Invoke(probabilitiesList, new object[] { probabilityElementConfiguration.Variable, table });
             }
 
-
+            probabilities = probabilitiesList;
         }
 
         protected override void AfterInitialization()

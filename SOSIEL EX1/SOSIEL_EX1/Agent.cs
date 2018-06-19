@@ -21,9 +21,14 @@ namespace SOSIEL_EX1
 
         public override Common.Entities.Agent CreateChild(string gender)
         {
-            Agent child = (Agent)base.Clone();
+            Agent child = (Agent)base.CreateChild(gender);
 
             return child;
+        }
+
+        protected override Common.Entities.Agent CreateInstance()
+        {
+            return new Agent();
         }
 
         public void GenerateCustomParams()
@@ -120,7 +125,7 @@ namespace SOSIEL_EX1
 
         private static void InitializeDynamicvariables(Agent agent)
         {
-            agent[AlgorithmVariables.AgentStatus] = "active";
+            agent[AlgorithmVariables.IsActive] = true;
         }
 
         private static double GenerateImportance(Agent agent, double min, double max)

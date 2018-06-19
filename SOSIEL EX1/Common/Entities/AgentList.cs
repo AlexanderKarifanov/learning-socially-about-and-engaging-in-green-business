@@ -17,7 +17,7 @@ namespace Common.Entities
         {
             get
             {
-                return Agents.Where(a => a[SosielVariables.AgentStatus] == "active").ToArray();
+                return Agents.Where(a => a[SosielVariables.IsActive] == true).ToArray();
             }
         }
 

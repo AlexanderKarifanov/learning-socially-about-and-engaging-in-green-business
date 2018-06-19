@@ -19,7 +19,9 @@
 
         public double HomosexualTypeRate { get; set; }
 
-        public int PairingAgeInterval { get; set; }
+        public int PairingAgeMin { get; set; }
+
+        public int PairingAgeMax { get; set; }
 
         public int YearsBetweenBirths { get; set; }
 

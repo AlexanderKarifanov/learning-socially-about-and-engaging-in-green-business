@@ -122,7 +122,7 @@ namespace Common.Entities
                         DecisionOption proto = layer.DecisionOptions.First();
 
                         DecisionOption doNothing = DecisionOption.Create(
-                            new [] { new DecisionOptionAntecedentPart(SosielVariables.AgentStatus, "==", true) },
+                            new [] { new DecisionOptionAntecedentPart(SosielVariables.IsActive, "==", true) },
                             DecisionOptionConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
                             false, false, 1, true
                         );

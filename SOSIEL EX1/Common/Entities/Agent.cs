@@ -86,7 +86,7 @@ namespace Common.Entities
         /// <returns></returns>
         public virtual Agent Clone()
         {
-            Agent agent = new Agent();
+            Agent agent = CreateInstance();
 
             agent.Prototype = Prototype;
             agent.privateVariables = new Dictionary<string, dynamic>(privateVariables);
@@ -107,14 +107,16 @@ namespace Common.Entities
 
         public virtual Agent CreateChild(string gender)
         {
-            Agent agent = new Agent();
+            Agent agent = CreateInstance();
 
             agent.Prototype = Prototype;
-            agent.privateVariables = new Dictionary<string, dynamic>(privateVariables);
+            agent.privateVariables = new Dictionary<string, dynamic>();
 
+            agent.privateVariables[SosielVariables.IsActive] = true;
             agent.privateVariables[SosielVariables.Age] = 0;
             agent.privateVariables[SosielVariables.Gender] = gender;
             agent.privateVariables[SosielVariables.PairStatus] = PairStatus.Unpaired;
+            agent.privateVariables[SosielVariables.Disability] = false;
 
             agent.privateVariables.Remove(SosielVariables.ExternalRelations);
 
@@ -126,7 +128,11 @@ namespace Common.Entities
 
             return agent;
         }
-        
+
+        protected virtual Agent CreateInstance()
+        {
+            return new Agent();
+        }
 
         /// <summary>
         /// Checks on parameter existence 

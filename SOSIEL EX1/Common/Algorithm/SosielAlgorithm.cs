@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Common.Processes.Demographic;
 
 namespace Common.Algorithm
 {
@@ -54,6 +53,10 @@ namespace Common.Algorithm
         /// <returns></returns>
         protected abstract Dictionary<IAgent, AgentState> InitializeFirstIterationState();
 
+        protected virtual void UseDemographic()
+        {
+            processConfiguration.UseDemographicProcesses = true;
+        }
 
         /// <summary>
         /// Executes last preparations before runs the algorithm. Executes after InitializeAgents and InitializeFirstIterationState.
@@ -164,9 +167,7 @@ namespace Common.Algorithm
             {
                 iterationCounter++;
 
-                IAgent[] orderedAgents = agentList.ActiveAgents.Randomize(processConfiguration.AgentRandomizationEnabled).ToArray();
-
-                var agentGroups = orderedAgents.GroupBy(a => a[SosielVariables.AgentType]).OrderBy(group => group.Key).ToArray();
+                
 
                 PreIterationCalculations(iterationCounter);
                 PreIterationStatistic(iterationCounter);
@@ -178,9 +179,18 @@ namespace Common.Algorithm
                 else
                     currentIteration = iterations.AddLast(InitializeFirstIterationState()).Value;
 
+                if (processConfiguration.UseDemographicProcesses)
+                {
+                    demographic.ChangeDemographic(iterationCounter, currentIteration, agentList);
+                }
+
                 Dictionary<IAgent, AgentState> priorIteration = iterations.Last.Previous?.Value;
 
                 rankedGoals = new Dictionary<IAgent, Goal[]>(agentList.Agents.Count);
+
+                IAgent[] orderedAgents = agentList.ActiveAgents.Randomize(processConfiguration.AgentRandomizationEnabled).ToArray();
+
+                var agentGroups = orderedAgents.GroupBy(a => a[SosielVariables.AgentType]).OrderBy(group => group.Key).ToArray();
 
                 orderedAgents.ForEach(a =>
                 {
