@@ -28,6 +28,12 @@
         "VariableType": "integer",
         "FilePath": "death_probability.csv",
         "WithHeader": true
+      },
+      {
+        "Variable": "TestInnovation",
+        "VariableType": "integer",
+        "FilePath": "general_probability.csv",
+        "WithHeader": true
       }
     ]
   },

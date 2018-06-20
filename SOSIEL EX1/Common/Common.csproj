@@ -87,6 +87,7 @@
     <Compile Include="Helpers\AntecedentBuilder.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Helpers\IEnumerableHelper.cs" />
+    <Compile Include="Helpers\ProbabilityTableRandomHelper.cs" />
     <Compile Include="Helpers\RandomizeHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\SosielProbabilityTables.cs" />
