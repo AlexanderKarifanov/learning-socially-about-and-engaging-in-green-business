@@ -167,22 +167,12 @@ namespace Common.Algorithm
             {
                 iterationCounter++;
 
-                
-
-                PreIterationCalculations(iterationCounter);
-                PreIterationStatistic(iterationCounter);
-
                 Dictionary<IAgent, AgentState> currentIteration;
 
                 if (iterationCounter > 1)
                     currentIteration = iterations.AddLast(new Dictionary<IAgent, AgentState>()).Value;
                 else
                     currentIteration = iterations.AddLast(InitializeFirstIterationState()).Value;
-
-                if (processConfiguration.UseDemographicProcesses)
-                {
-                    demographic.ChangeDemographic(iterationCounter, currentIteration, agentList);
-                }
 
                 Dictionary<IAgent, AgentState> priorIteration = iterations.Last.Previous?.Value;
 
@@ -199,6 +189,14 @@ namespace Common.Algorithm
                     if (iterationCounter > 1)
                         currentIteration.Add(a, priorIteration[a].CreateForNextIteration());
                 });
+
+                if (processConfiguration.UseDemographicProcesses && iterationCounter > 1)
+                {
+                    demographic.ChangeDemographic(iterationCounter, currentIteration, agentList);
+                }
+
+                PreIterationCalculations(iterationCounter);
+                PreIterationStatistic(iterationCounter);
 
                 Site[] orderedSites = activeSites.Randomize().ToArray();
 
@@ -234,7 +232,7 @@ namespace Common.Algorithm
                                         {
                                             BeforeCounterfactualThinking(agent, site);
 
-                                            foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
+                                            foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                             {
                                                 //optimization
                                                 Goal selectedGoal = rankedGoals[agent].First(g => set.Key.AssociatedWith.Contains(g));
@@ -243,7 +241,7 @@ namespace Common.Algorithm
 
                                                 if (selectedGoalState.Confidence == false)
                                                 {
-                                                    foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
+                                                    foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                                     {
                                                         if (layer.Key.LayerConfiguration.Modifiable || (!layer.Key.LayerConfiguration.Modifiable && layer.Any(r => r.IsModifiable)))
                                                         {
@@ -305,9 +303,9 @@ namespace Common.Algorithm
                             {
                                 foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                 {
-                                    foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
+                                    foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                     {
-                                        foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
+                                        foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                         {
 
                                             BeforeActionSelection(agent, site);
@@ -331,9 +329,9 @@ namespace Common.Algorithm
                                 {
                                     foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                     {
-                                        foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy((IGrouping<MentalModel, DecisionOption> g) => g.Key.PositionNumber))
+                                        foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                         {
-                                            foreach (var layer in set.GroupBy(h => h.Layer).OrderBy((IGrouping<DecisionOptionLayer, DecisionOption> g) => g.Key.PositionNumber))
+                                            foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                             {
                                                 BeforeActionSelection(agent, site);
 
@@ -360,15 +358,13 @@ namespace Common.Algorithm
 
                                     AfterActionTaking(agent, site);
                                 }
-                                //if (periods.Last.Value.IsOverconsumption)
-                                //    return periods;
                             }
                         }
                     }
 
                     if (processConfiguration.AlgorithmStopIfAllAgentsSelectDoNothing && iterationCounter > 1)
                     {
-                        if (currentIteration.SelectMany(kvp => kvp.Value.DecisionOptionsHistories.Values.SelectMany(rh => rh.Activated)).All(r => r.IsAction == false))
+                        if (!currentIteration.SelectMany(kvp => kvp.Value.DecisionOptionsHistories.Values.SelectMany(rh => rh.Activated)).Any())
                         {
                             algorithmStoppage = true;
                         }

@@ -103,31 +103,13 @@ namespace SOSIEL_EX1
 
             InitialStateConfiguration initialState = _configuration.InitialState;
 
-            //add donothing decision option if necessary
-            agentPrototypes.ForEach(kvp =>
-            {
-                AgentPrototype prototype = kvp.Value;
-
-                string prototypeName = kvp.Key;
-
-                if (prototype.MentalProto.Any(set => set.Layers.Any(layer => layer.LayerConfiguration.UseDoNothing)))
-                {
-                    var added = prototype.AddDoNothingDecisionOptions();
-
-                    initialState.AgentsState.Where(aState => aState.PrototypeOfAgent == prototypeName).ForEach(aState =>
-                    {
-                        aState.AssignedDecisionOptions = aState.AssignedDecisionOptions.Concat(added).ToArray();
-                    });
-                }
-            });
-
             var networks = new Dictionary<string, List<Common.Entities.Agent>>();
 
             //create agents, groupby is used for saving agents numeration, e.g. FE1, HM1. HM2 etc
             initialState.AgentsState.GroupBy(state => state.PrototypeOfAgent).ForEach((agentStateGroup) =>
             {
                 AgentPrototype prototype = agentPrototypes[agentStateGroup.Key];
-
+                var mentalProto = prototype.MentalProto;
                 int index = 1;
 
                 agentStateGroup.ForEach((agentState) =>
@@ -256,7 +238,7 @@ namespace SOSIEL_EX1
                         {
                             agent[AlgorithmVariables.HouseholdIncome] = householdIncome;
                             agent[AlgorithmVariables.HouseholdExpenses] = householdExpenses;
-                            agent[AlgorithmVariables.HouseholdSavings] += householdSavings;
+                            agent[AlgorithmVariables.HouseholdSavings] = householdSavings;
                         });
                     });
             }

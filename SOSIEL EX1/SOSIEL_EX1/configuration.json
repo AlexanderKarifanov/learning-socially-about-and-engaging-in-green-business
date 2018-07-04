@@ -88,7 +88,7 @@
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 1,
-          "Id": "MM1_L1_KH1",
+          "Id": "MM1_L1_DO1",
           "Antecedent": [
             {
               "Param": "IsActive",
@@ -100,14 +100,13 @@
             "Param": "Income",
             "VariableValue": "IncomeFromChoresAtHome"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 2,
-          "Id": "MM1_L1_KH2",
+          "Id": "MM1_L1_DO2",
           "Antecedent": [
             {
               "Param": "Age",
@@ -139,14 +138,13 @@
             "Param": "Income",
             "VariableValue": "IncomeFromForestry"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 3,
-          "Id": "MM1_L1_KH3",
+          "Id": "MM1_L1_DO3",
           "Antecedent": [
             {
               "Param": "Age",
@@ -174,14 +172,13 @@
             "Param": "Income",
             "VariableValue": "IncomeFromAbroad"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 4,
-          "Id": "MM1_L1_KH4",
+          "Id": "MM1_L1_DO4",
           "Antecedent": [
             {
               "Param": "Age",
@@ -194,14 +191,13 @@
             "Param": "Income",
             "VariableValue": "IncomeFromPension"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 5,
-          "Id": "MM1_L1_KH5",
+          "Id": "MM1_L1_DO5",
           "Antecedent": [
             {
               "Param": "Disability",
@@ -214,14 +210,13 @@
             "Param": "Income",
             "VariableValue": "IncomeFromDisability"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 6,
-          "Id": "MM1_L1_KH6",
+          "Id": "MM1_L1_DO6",
           "Antecedent": [
             {
               "Param": "Age",
@@ -250,14 +245,13 @@
             "VariableValue": "IncomeFromGreenTourism"
           },
           "RequiredParticipants": 2,
-          "Scope": "Household", 
-          "IsAction": true
+          "Scope": "Household"
         },
         {
           "MentalModel": 1,
           "DecisionOptionsLayer": 1,
           "PositionNumber": 7,
-          "Id": "MM1_L1_KH7",
+          "Id": "MM1_L1_DO7",
           "Antecedent": [
             {
               "Param": "Age",
@@ -280,8 +274,7 @@
             "Param": "Income",
             "VariableValue": "IncomeFromPickingMushrooms"
           },
-          "RequiredParticipants": 1,
-          "IsAction": true
+          "RequiredParticipants": 1
         }
       ],
 
@@ -309,33 +302,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH6": {
+          "MM1_L1_DO6": {
             "G3": 32000
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH6",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO6",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -365,33 +358,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH6": {
+          "MM1_L1_DO6": {
             "G3": 32000
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH6",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO6",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -420,33 +413,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH6": {
+          "MM1_L1_DO6": {
             "G3": 32000
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH6",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO6",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -475,33 +468,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH3": {
+          "MM1_L1_DO3": {
             "G3": 16000
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH3",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO3",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -531,33 +524,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH3": {
+          "MM1_L1_DO3": {
             "G3": 16000
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH3",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO3",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -586,16 +579,16 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -626,33 +619,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH3": {
+          "MM1_L1_DO3": {
             "G3": 16000
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH3",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO3",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -681,33 +674,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH3": {
+          "MM1_L1_DO3": {
             "G3": 16000
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH3",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO3",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],
@@ -736,33 +729,33 @@
         },
 
         "AnticipatedInfluenceState": {
-          "MM1_L1_KH1": {
+          "MM1_L1_DO1": {
             "G3": 0
           },
-          "MM1_L1_KH2": {
+          "MM1_L1_DO2": {
             "G3": 3300
           },
-          "MM1_L1_KH3": {
+          "MM1_L1_DO3": {
             "G3": 16000
           },
-          "MM1_L1_KH4": {
+          "MM1_L1_DO4": {
             "G3": 1800
           },
-          "MM1_L1_KH5": {
+          "MM1_L1_DO5": {
             "G3": 1800
           },
-          "MM1_L1_KH7": {
+          "MM1_L1_DO7": {
             "G3": 500
           }
         },
 
         "AssignedDecisionOptions": [
-          "MM1_L1_KH1",
-          "MM1_L1_KH2",
-          "MM1_L1_KH3",
-          "MM1_L1_KH4",
-          "MM1_L1_KH5",
-          "MM1_L1_KH7"
+          "MM1_L1_DO1",
+          "MM1_L1_DO2",
+          "MM1_L1_DO3",
+          "MM1_L1_DO4",
+          "MM1_L1_DO5",
+          "MM1_L1_DO7"
         ],
 
         "AssignedGoals": [ "G3" ],

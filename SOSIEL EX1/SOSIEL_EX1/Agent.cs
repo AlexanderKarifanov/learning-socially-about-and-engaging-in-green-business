@@ -23,6 +23,10 @@ namespace SOSIEL_EX1
         {
             Agent child = (Agent)base.CreateChild(gender);
 
+            child[AlgorithmVariables.AgentIncome] = 0;
+            child[AlgorithmVariables.AgentExpenses] = 0;
+            child[AlgorithmVariables.AgentSavings] = 0;
+
             return child;
         }
 

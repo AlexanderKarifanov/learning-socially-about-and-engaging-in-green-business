@@ -29,8 +29,6 @@ namespace Common.Entities
 
         public DecisionOptionConsequent Consequent { get; private set; }
 
-        public bool IsAction { get; private set; }
-
         public bool IsModifiable { get; private set; }
 
         public int RequiredParticipants { get; private set; }
@@ -43,7 +41,7 @@ namespace Common.Entities
         {
             get
             {
-                return RequiredParticipants > 1 || RequiredParticipants == 0;
+                return RequiredParticipants > 1;
             }
         }
 
@@ -52,7 +50,7 @@ namespace Common.Entities
         {
             get
             {
-                return string.Format("MM{0}_L{1}_KH{2}", Layer.Set.PositionNumber, Layer.PositionNumber, PositionNumber);
+                return string.Format("MM{0}_L{1}_DO{2}", Layer.Set.PositionNumber, Layer.PositionNumber, PositionNumber);
             }
         }
 

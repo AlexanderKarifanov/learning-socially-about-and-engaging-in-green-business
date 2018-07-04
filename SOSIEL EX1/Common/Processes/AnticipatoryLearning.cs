@@ -135,15 +135,6 @@ namespace Common.Processes
 
                     maxPossibleDifference = maxValue - goalState.PriorValue;
                 }
-
-                //if (goal.Tendency == "EqualToOrBelowFocalValue")
-                //{
-                //    double maxValue = agent.AssignedDecisionOptions.Where(rule => rule.Consequent.Param == goal.ReferenceVariable)
-                //        .Select(rule => string.IsNullOrEmpty(rule.Consequent.VariableValue) ? (double)rule.Consequent.Value : (double)agent[rule.Consequent.VariableValue])
-                //        .Max();
-
-                //    maxPossibleDifference = maxValue - goalState.PriorValue;
-                //}
             }
 
             return Math.Abs(goalState.DiffCurrentAndPrior / maxPossibleDifference);
@@ -170,30 +161,6 @@ namespace Common.Processes
             {
                 currentGoalState.Confidence = false;
             }
-        }
-
-        protected override void EqualToOrBelowFocalValue()
-        {
-            //if (currentGoalState.DiffCurrentAndFocal > 0)
-            //{
-            //    currentGoalState.AnticipatedDirection = AnticipatedDirection.Down;
-
-            //    if (currentGoalState.Value > currentGoalState.PriorValue)
-            //    {
-            //        currentGoalState.Confidence = true;
-            //    }
-            //    else
-            //    {
-            //        currentGoalState.Confidence = false;
-            //    }
-            //}
-            //else
-            //{
-            //    currentGoalState.AnticipatedDirection = AnticipatedDirection.Stay;
-            //    currentGoalState.Confidence = true;
-            //}
-
-            throw new NotImplementedException("EqualToOrBelowFocalValue is not implemented in AnticipatoryLearning");
         }
 
         protected override void Maximize()

@@ -25,7 +25,10 @@ namespace Common.Processes
 
             agent.ConnectedAgents.Randomize().ForEach(neighbour =>
             {
-                IEnumerable<DecisionOption> activatedDecisionOptions = priorIterationState[neighbour].DecisionOptionsHistories
+                AgentState priorIteration;
+                if (!priorIterationState.TryGetValue(neighbour, out priorIteration)) return;
+
+                IEnumerable<DecisionOption> activatedDecisionOptions = priorIteration.DecisionOptionsHistories
                     .SelectMany(rh => rh.Value.Activated).Where(r => r.Layer == layer);
 
                 activatedDecisionOptions.ForEach(decisionOption =>

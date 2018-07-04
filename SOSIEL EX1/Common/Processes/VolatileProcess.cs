@@ -7,7 +7,6 @@ namespace Common.Processes
     public abstract class VolatileProcess
     {
         protected abstract void EqualToOrAboveFocalValue();
-        protected abstract void EqualToOrBelowFocalValue();
         protected abstract void Maximize();
         protected abstract void Minimize();
 
@@ -21,12 +20,7 @@ namespace Common.Processes
                         EqualToOrAboveFocalValue();
                         break;
                     }
-                case "EqualToOrBelowFocalValue":
-                    {
-                        EqualToOrBelowFocalValue();
-                        break;
-                    }
-                case "Maximize":
+               case "Maximize":
                     {
                         Maximize();
                         break;

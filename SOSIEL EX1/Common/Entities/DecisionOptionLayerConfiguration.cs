@@ -10,8 +10,6 @@ namespace Common.Entities
     {
         public bool Modifiable { get; private set; }
 
-        public bool UseDoNothing { get; private set; }
-
         public int MaxNumberOfDecisionOptions { get; private set; }
 
         public int[] ConsequentValueInterval { get; private set; }

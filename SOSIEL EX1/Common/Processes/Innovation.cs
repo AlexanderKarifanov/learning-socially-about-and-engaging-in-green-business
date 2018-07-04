@@ -32,12 +32,12 @@ namespace Common.Processes
 
             //gets prior period activated decision options
             DecisionOptionsHistory history = priorIteration[agent].DecisionOptionsHistories[site];
-            DecisionOption priorPeriodDecisionOption = history.Activated.Single(r=>r.Layer == layer);
+            DecisionOption priorPeriodDecisionOption = history.Activated.FirstOrDefault(r=>r.Layer == layer);
 
             LinkedListNode<Dictionary<IAgent, AgentState>> tempNode = lastIteration.Previous;
 
             //if prior period decision option is do nothing then looking for any do something decision option
-            while (priorPeriodDecisionOption.IsAction == false && tempNode.Previous != null)
+            while (priorPeriodDecisionOption == null && tempNode.Previous != null)
             {
                 tempNode = tempNode.Previous;
 

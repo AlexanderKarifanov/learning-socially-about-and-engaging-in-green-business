@@ -35,26 +35,7 @@ namespace Common.Processes
             {
                 decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
 
-                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
-            }
-        }
-
-        protected override void EqualToOrBelowFocalValue()
-        {
-            DecisionOption[] decisionOptions = anticipatedInfluences.Where(kvp => matchedDecisionOptions.Contains(kvp.Key))
-                .Where(kvp => kvp.Value[selectedGoal] < 0 && Math.Abs(kvp.Value[selectedGoal]) > Math.Abs(selectedGoalState.DiffCurrentAndFocal)).Select(kvp => kvp.Key).ToArray();
-
-
-            //If 0 decision options are identified, then counterfactual thinking(t) = unsuccessful.
-            if (decisionOptions.Length == 0)
-            {
-                confidence = false;
-            }
-            else
-            {
-                decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderBy(h => h.Key).First().ToArray();
-
-                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
+                confidence = decisionOptions.Any(r => r != activatedDecisionOption);
             }
         }
 
@@ -72,7 +53,7 @@ namespace Common.Processes
             {
                 decisionOptions = decisionOptions.GroupBy(r => anticipatedInfluences[r][selectedGoal]).OrderByDescending(h => h.Key).First().ToArray();
 
-                confidence = decisionOptions.Any(r => !(r == activatedDecisionOption || r.IsAction == false));
+                confidence = decisionOptions.Any(r => r != activatedDecisionOption);
             }
         }
 
@@ -108,7 +89,7 @@ namespace Common.Processes
             DecisionOptionsHistory history = priorIterationAgentState.DecisionOptionsHistories[site];
 
 
-            activatedDecisionOption = history.Activated.First(r => r.Layer == layer);
+            activatedDecisionOption = history.Activated.FirstOrDefault(r => r.Layer == layer);
 
             anticipatedInfluences = agent.AnticipationInfluence;
 

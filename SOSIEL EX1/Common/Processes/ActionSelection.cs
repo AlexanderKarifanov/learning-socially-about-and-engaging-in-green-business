@@ -30,97 +30,7 @@ namespace Common.Processes
         #region Specific logic for tendencies
         protected override void EqualToOrAboveFocalValue()
         {
-            //Rule[] selected = new Rule[] { };
-
-            //if (goalState.DiffCurrentAndFocal > 0)
-            //{
-            //    if (matchedDecisionOptions.Any(r => r == priorPeriodActivatedDecisionOption))
-            //    {
-            //        decisionOptionForActivating = priorPeriodActivatedDecisionOption;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
-
-            //        selected = temp.Where(r=> anticipatedInfluence[r][processedGoal] < goalState.DiffCurrentAndFocal).ToArray();
-
-            //        if(selected.Length == 0)
-            //        {
-            //            selected = temp.Where(r => anticipatedInfluence[r][processedGoal] <= goalState.DiffCurrentAndFocal).ToArray();
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] >= 0).ToArray();
-
-            //    selected = temp.Where(r=> anticipatedInfluence[r][processedGoal] > goalState.DiffCurrentAndFocal).ToArray();
-
-            //    if (selected.Length == 0)
-            //    {
-            //        selected = temp.Where(r => anticipatedInfluence[r][processedGoal] >= goalState.DiffCurrentAndFocal).ToArray();
-            //    }
-            //}
-
-            //if (selected.Length > 0)
-            //{
-            //    selected = selected.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
-
-            //    decisionOptionForActivating = selected.RandomizeOne();
-            //}
-
-
-
-
-
             //We don't do anything. Do nothing decisionOption will be selected later.
-        }
-
-        protected override void EqualToOrBelowFocalValue()
-        {
-            //Rule[] selected = new Rule[] { };
-
-            //if (goalState.DiffCurrentAndFocal < 0)
-            //{
-            //    if (matchedDecisionOptions.Any(r => r == priorPeriodActivatedDecisionOption))
-            //    {
-            //        decisionOptionForActivating = priorPeriodActivatedDecisionOption;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
-
-            //        selected = temp.Where(r => anticipatedInfluence[r][processedGoal] < Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
-
-            //        if (selected.Length == 0)
-            //        {
-            //            selected = temp.Where(r => anticipatedInfluence[r][processedGoal] <= Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
-            //        }
-
-            //    }
-            //}
-            //else
-            //{
-            //    Rule[] temp = matchedDecisionOptions.Where(r => anticipatedInfluence[r][processedGoal] <= 0).ToArray();
-
-            //    selected = temp.Where(r => anticipatedInfluence[r][processedGoal] > Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
-
-            //    if (selected.Length == 0)
-            //    {
-            //        selected = temp.Where(r => anticipatedInfluence[r][processedGoal] >= Math.Abs(goalState.DiffCurrentAndFocal)).ToArray();
-            //    }
-            //}
-
-            //if (selected.Length > 0)
-            //{
-            //    selected = selected.GroupBy(r => anticipatedInfluence[r][processedGoal]).OrderBy(hg => hg.Key).First().ToArray();
-
-            //    decisionOptionForActivating = selected.RandomizeOne();
-            //}
-
-            throw new NotImplementedException("EqualToOrBelowFocalValue is not implemented in ActionSelection");
         }
 
         protected override void Maximize()
@@ -191,6 +101,11 @@ namespace Common.Processes
 
             matchedDecisionOptions = processedDecisionOptions.Except(history.Blocked).Where(h => h.IsMatch(agent)).ToArray();
 
+            if (matchedDecisionOptions.Length == 0)
+            {
+                return;
+            }
+
             if (matchedDecisionOptions.Length > 1)
             {
                 if (priorPeriod != null)
@@ -200,19 +115,6 @@ namespace Common.Processes
                 anticipatedInfluence = agent.AnticipationInfluence;
 
                 SpecificLogic(processedGoal.Tendency);
-
-                //if none are identified, then choose the do-nothing decisionOption.
-                if (decisionOptionForActivating == null)
-                {
-                    try
-                    {
-                        decisionOptionForActivating = processedDecisionOptions.Single(h => h.IsAction == false);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        throw new SosielAlgorithmException(string.Format("Decision option for activating hasn't been found by {0}", agent.Id));
-                    }
-                }
             }
             else
                 decisionOptionForActivating = matchedDecisionOptions[0];
@@ -226,8 +128,11 @@ namespace Common.Processes
                 ShareCollectiveAction(agent, decisionOptionForActivating, lastIteration.Value);
             }
 
+            if (decisionOptionForActivating != null)
+            {
+                history.Activated.Add(decisionOptionForActivating);
+            }
 
-            history.Activated.Add(decisionOptionForActivating);
             history.Matched.AddRange(matchedDecisionOptions);
         }
 

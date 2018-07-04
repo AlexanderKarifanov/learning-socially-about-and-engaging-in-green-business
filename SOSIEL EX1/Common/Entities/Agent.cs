@@ -196,7 +196,7 @@ namespace Common.Entities
             }
             else
             {
-                DecisionOption decisionOptionForRemoving = DecisionOptionActivationFreshness.Where(kvp => kvp.Key.Layer == layer && kvp.Key.IsAction).GroupBy(kvp => kvp.Value).OrderByDescending(g => g.Key)
+                DecisionOption decisionOptionForRemoving = DecisionOptionActivationFreshness.Where(kvp => kvp.Key.Layer == layer).GroupBy(kvp => kvp.Value).OrderByDescending(g => g.Key)
                     .Take(1).SelectMany(g => g.Select(kvp => kvp.Key)).RandomizeOne();
 
                 AssignedDecisionOptions.Remove(decisionOptionForRemoving);

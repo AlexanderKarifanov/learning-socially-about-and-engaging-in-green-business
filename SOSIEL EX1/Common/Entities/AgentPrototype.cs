@@ -31,7 +31,7 @@ namespace Common.Entities
 
         public List<MentalModel> MentalProto
         {
-            get { return mentalProto == null ? TransformKhToMentalModel() : mentalProto; }
+            get { return mentalProto == null ? TransformDOToMentalModel() : mentalProto; }
         }
 
         public bool IsSiteOriented { get; set; }
@@ -65,7 +65,7 @@ namespace Common.Entities
         /// Transforms from kh list to mental model
         /// </summary>
         /// <returns></returns>
-        private List<MentalModel> TransformKhToMentalModel()
+        private List<MentalModel> TransformDOToMentalModel()
         {
             mentalProto = DecisionOptions.GroupBy(kh => kh.MentalModel).OrderBy(g => g.Key).Select(g =>
                    new MentalModel(g.Key, Goals.Where(goal => MentalModel[g.Key.ToString()].AssociatedWith.Contains(goal.Name)).ToArray(),
@@ -85,7 +85,7 @@ namespace Common.Entities
         public void AddNewDecisionOption(DecisionOption newDecisionOption, DecisionOptionLayer layer)
         {
             if (mentalProto == null)
-                TransformKhToMentalModel();
+                TransformDOToMentalModel();
 
             layer.Add(newDecisionOption);
 
@@ -102,42 +102,5 @@ namespace Common.Entities
         {
             return DecisionOptions.Any(kh => kh == decisionOption);
         }
-
-
-        /// <summary>
-        /// Adds do nothing decision option to each decisionOption set and decisionOption layer
-        /// </summary>
-        /// <returns>Returns created decision option ids</returns>
-        public IEnumerable<string> AddDoNothingDecisionOptions()
-        {
-            List<string> temp = new List<string>();
-
-            MentalProto.ForEach(mm =>
-            {
-                //only for layers with UseDoNothing: true configuration
-                mm.Layers.Where(layer => layer.LayerConfiguration.UseDoNothing).ForEach(layer =>
-                {
-                    //todo delete
-
-                    //if (!layer.DecisionOptions.Any(kh => kh.IsAction == false))
-                    //{
-                    //    DecisionOption proto = layer.DecisionOptions.First();
-
-                    //    DecisionOption doNothing = DecisionOption.Create(
-                    //        new [] { new DecisionOptionAntecedentPart(SosielVariables.IsActive, "==", true) },
-                    //        DecisionOptionConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
-                    //        false, false, 1, true
-                    //    );
-
-                    //    AddNewDecisionOption(doNothing, layer);
-
-                    //    temp.Add(doNothing.Id);
-                    //}
-                });
-            });
-
-            return temp;
-        }
-
     }
 }
