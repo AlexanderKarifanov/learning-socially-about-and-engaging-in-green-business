@@ -17,12 +17,15 @@ namespace Common.Processes
         /// <summary>
         /// Executes agent innovation process for specific site
         /// </summary>
-        /// <param name="agent"></param>
-        /// <param name="lastIteration"></param>
-        /// <param name="goal"></param>
-        /// <param name="layer"></param>
+        /// <param name="agent">The agent.</param>
+        /// <param name="lastIteration">The last iteration.</param>
+        /// <param name="goal">The goal.</param>
+        /// <param name="layer">The layer.</param>
+        /// <param name="site">The site.</param>
+        /// <param name="probabilities">The probabilities.</param>
+        /// <exception cref="Exception">Not implemented for AnticipatedDirection == 'stay'</exception>
         public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Goal goal,
-            DecisionOptionLayer layer, Site site)
+            DecisionOptionLayer layer, Site site, Probabilities probabilities)
         {
             Dictionary<IAgent, AgentState> currentIteration = lastIteration.Value;
             Dictionary<IAgent, AgentState> priorIteration = lastIteration.Previous.Value;
@@ -53,14 +56,17 @@ namespace Common.Processes
                 GoalState selectedGoalState = lastIteration.Value[agent].GoalsState[selectedGoal];
 
                 #region Generating consequent
-                double min = parameters.MinValue(agent);
-                double max = parameters.MaxValue(agent);
+                int min = parameters.MinValue(agent);
+                int max = parameters.MaxValue(agent);
 
                 double consequentValue = string.IsNullOrEmpty(priorPeriodDecisionOption.Consequent.VariableValue)
                     ? priorPeriodDecisionOption.Consequent.Value
                     : agent[priorPeriodDecisionOption.Consequent.VariableValue];
 
                 double newConsequent = consequentValue;
+
+                var probabilityTable =
+                    probabilities.GetProbabilityTable<int>(SosielProbabilityTables.GeneralProbabilityTable);
 
                 switch (selectedGoalState.AnticipatedDirection)
                 {
@@ -70,17 +76,13 @@ namespace Common.Processes
                             {
                                 if (consequentValue == max) return;
 
-                                max = Math.Abs(consequentValue - max);
-
-                                newConsequent += (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
+                                newConsequent = probabilityTable.GetRandomValue((int)consequentValue + 1, max, false);
                             }
                             if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
                             {
                                 if (consequentValue == min) return;
 
-                                max = Math.Abs(consequentValue - min);
-
-                                newConsequent -= (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
+                                newConsequent = probabilityTable.GetRandomValue(min, (int)consequentValue - 1, true);
                             }
 
                             break;
@@ -91,17 +93,13 @@ namespace Common.Processes
                             {
                                 if (consequentValue == min) return;
 
-                                max = Math.Abs(consequentValue - min);
-
-                                newConsequent -= (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
+                                newConsequent = probabilityTable.GetRandomValue(min, (int)consequentValue - 1, true);
                             }
                             if (DecisionOptionLayerConfiguration.ConvertSign(parameters.ConsequentRelationshipSign[goal.Name]) == ConsequentRelationship.Negative)
                             {
                                 if (consequentValue == max) return;
 
-                                max = Math.Abs(consequentValue - max);
-
-                                newConsequent += (Math.Abs(PowerLawRandom.GetInstance.Next(min, max) - max));
+                                newConsequent = probabilityTable.GetRandomValue((int)consequentValue + 1, max, false);
                             }
 
                             break;

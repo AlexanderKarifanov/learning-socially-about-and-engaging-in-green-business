@@ -30,7 +30,7 @@
         "WithHeader": true
       },
       {
-        "Variable": "TestInnovation",
+        "Variable": "General",
         "VariableType": "integer",
         "FilePath": "general_probability.csv",
         "WithHeader": true
