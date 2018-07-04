@@ -117,20 +117,22 @@ namespace Common.Entities
                 //only for layers with UseDoNothing: true configuration
                 mm.Layers.Where(layer => layer.LayerConfiguration.UseDoNothing).ForEach(layer =>
                 {
-                    if (!layer.DecisionOptions.Any(kh => kh.IsAction == false))
-                    {
-                        DecisionOption proto = layer.DecisionOptions.First();
+                    //todo delete
 
-                        DecisionOption doNothing = DecisionOption.Create(
-                            new [] { new DecisionOptionAntecedentPart(SosielVariables.IsActive, "==", true) },
-                            DecisionOptionConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
-                            false, false, 1, true
-                        );
+                    //if (!layer.DecisionOptions.Any(kh => kh.IsAction == false))
+                    //{
+                    //    DecisionOption proto = layer.DecisionOptions.First();
 
-                        AddNewDecisionOption(doNothing, layer);
+                    //    DecisionOption doNothing = DecisionOption.Create(
+                    //        new [] { new DecisionOptionAntecedentPart(SosielVariables.IsActive, "==", true) },
+                    //        DecisionOptionConsequent.Renew(proto.Consequent, Activator.CreateInstance(proto.Consequent.Value.GetType())),
+                    //        false, false, 1, true
+                    //    );
 
-                        temp.Add(doNothing.Id);
-                    }
+                    //    AddNewDecisionOption(doNothing, layer);
+
+                    //    temp.Add(doNothing.Id);
+                    //}
                 });
             });
 
