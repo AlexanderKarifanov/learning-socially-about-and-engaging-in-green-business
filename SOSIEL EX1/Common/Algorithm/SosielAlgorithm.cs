@@ -23,6 +23,8 @@ namespace Common.Algorithm
         protected Probabilities probabilities = new Probabilities();
 
         //processes
+        protected GoalPrioritizing gp = new GoalPrioritizing();
+        protected GoalSelecting gs = new GoalSelecting();
         protected AnticipatoryLearning al = new AnticipatoryLearning();
         protected CounterfactualThinking ct = new CounterfactualThinking();
         protected Innovation it = new Innovation();
@@ -208,60 +210,67 @@ namespace Common.Algorithm
                     {
                         foreach (IAgent agent in agentGroup)
                         {
-                            rankedGoals[agent] = al.SortByImportance(agent, currentIteration[agent].GoalsState)
+                            rankedGoals[agent] = gs.SortByImportance(agent, currentIteration[agent].GoalsState)
                                 .ToArray();
                         }
                     }
                 }
 
                 if (processConfiguration.AnticipatoryLearningEnabled && iterationCounter > 1)
+                {
+                    //1st round: AL, CT, IR
+                    foreach (var agentGroup in agentGroups)
                     {
-                        //1st round: AL, CT, IR
-                        foreach (var agentGroup in agentGroups)
+                        foreach (IAgent agent in agentGroup)
                         {
-                            foreach (IAgent agent in agentGroup)
+                            //anticipatory learning process
+                            al.Execute(agent, iterations.Last);
+
+
+                            var agentGoalState = currentIteration[agent].GoalsState;
+                            //goal prioritizing
+                            gp.Prioritize(agent, agentGoalState);
+
+                            //goal selecting
+                            rankedGoals[agent] = gs.SortByImportance(agent, agentGoalState).ToArray();
+
+                            if (processConfiguration.CounterfactualThinkingEnabled)
                             {
-                                //anticipatory learning process
-                                rankedGoals[agent] = al.Execute(agent, iterations.Last);
-
-                                if (processConfiguration.CounterfactualThinkingEnabled)
+                                if (rankedGoals[agent].Any(g => currentIteration[agent].GoalsState.Any(kvp => kvp.Value.Confidence == false)))
                                 {
-                                    if (rankedGoals[agent].Any(g => currentIteration[agent].GoalsState.Any(kvp => kvp.Value.Confidence == false)))
+                                    foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                     {
-                                        foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                                        BeforeCounterfactualThinking(agent, site);
+
+                                        foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                         {
-                                            BeforeCounterfactualThinking(agent, site);
+                                            //optimization
+                                            Goal selectedGoal = rankedGoals[agent].First(g => set.Key.AssociatedWith.Contains(g));
 
-                                            foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
+                                            GoalState selectedGoalState = currentIteration[agent].GoalsState[selectedGoal];
+
+                                            if (selectedGoalState.Confidence == false)
                                             {
-                                                //optimization
-                                                Goal selectedGoal = rankedGoals[agent].First(g => set.Key.AssociatedWith.Contains(g));
-
-                                                GoalState selectedGoalState = currentIteration[agent].GoalsState[selectedGoal];
-
-                                                if (selectedGoalState.Confidence == false)
+                                                foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                                 {
-                                                    foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
+                                                    if (layer.Key.LayerConfiguration.Modifiable || (!layer.Key.LayerConfiguration.Modifiable && layer.Any(r => r.IsModifiable)))
                                                     {
-                                                        if (layer.Key.LayerConfiguration.Modifiable || (!layer.Key.LayerConfiguration.Modifiable && layer.Any(r => r.IsModifiable)))
+                                                        //looking for matched decision option in prior period
+                                                        DecisionOption[] matchedDecisionOptions = priorIteration[agent].DecisionOptionsHistories[site]
+                                                                .Matched.Where(h => h.Layer == layer.Key).ToArray();
+
+                                                        bool? CTResult = null;
+
+                                                        //counterfactual thinking process
+                                                        if (matchedDecisionOptions.Length >= 2)
+                                                            CTResult = ct.Execute(agent, iterations.Last, selectedGoal, matchedDecisionOptions, layer.Key, site);
+
+
+                                                        if (processConfiguration.InnovationEnabled)
                                                         {
-                                                            //looking for matched decision option in prior period
-                                                            DecisionOption[] matchedDecisionOptions = priorIteration[agent].DecisionOptionsHistories[site]
-                                                                    .Matched.Where(h => h.Layer == layer.Key).ToArray();
-
-                                                            bool? CTResult = null;
-
-                                                            //counterfactual thinking process
-                                                            if (matchedDecisionOptions.Length >= 2)
-                                                                CTResult = ct.Execute(agent, iterations.Last, selectedGoal, matchedDecisionOptions, layer.Key, site);
-
-
-                                                            if (processConfiguration.InnovationEnabled)
-                                                            {
-                                                                //innovation process
-                                                                if (CTResult == false || matchedDecisionOptions.Length < 2)
-                                                                    it.Execute(agent, iterations.Last, selectedGoal, layer.Key, site, probabilities);
-                                                            }
+                                                            //innovation process
+                                                            if (CTResult == false || matchedDecisionOptions.Length < 2)
+                                                                it.Execute(agent, iterations.Last, selectedGoal, layer.Key, site, probabilities);
                                                         }
                                                     }
                                                 }
@@ -272,125 +281,126 @@ namespace Common.Algorithm
                             }
                         }
                     }
+                }
 
-                    if (processConfiguration.SocialLearningEnabled && iterationCounter > 1)
+                if (processConfiguration.SocialLearningEnabled && iterationCounter > 1)
+                {
+                    //2nd round: SL
+                    foreach (var agentGroup in agentGroups)
                     {
-                        //2nd round: SL
-                        foreach (var agentGroup in agentGroups)
-                        {
 
-                            foreach (IAgent agent in agentGroup)
+                        foreach (IAgent agent in agentGroup)
+                        {
+                            foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
+                            {
+                                foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
+                                {
+                                    //social learning process
+                                    sl.ExecuteLearning(agent, iterations.Last, layer.Key);
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                if (processConfiguration.DecisionOptionSelectionEnabled)
+                {
+                    //AS part I
+                    foreach (var agentGroup in agentGroups)
+                    {
+                        foreach (IAgent agent in agentGroup)
+                        {
+                            foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                             {
                                 foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                 {
                                     foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                     {
-                                        //social learning process
-                                        sl.ExecuteLearning(agent, iterations.Last, layer.Key);
+
+                                        BeforeActionSelection(agent, site);
+
+
+                                        //action selection process part I
+                                        acts.ExecutePartI(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
                                     }
                                 }
                             }
                         }
-
                     }
 
-                    if (processConfiguration.DecisionOptionSelectionEnabled)
+
+                    if (processConfiguration.DecisionOptionSelectionPart2Enabled && iterationCounter > 1)
                     {
-                        //AS part I
+                        //4th round: AS part II
                         foreach (var agentGroup in agentGroups)
                         {
                             foreach (IAgent agent in agentGroup)
                             {
                                 foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                 {
-                                    foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
+                                    foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                     {
                                         foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                         {
-
                                             BeforeActionSelection(agent, site);
 
-
-                                            //action selection process part I
-                                            acts.ExecutePartI(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-
-                        if (processConfiguration.DecisionOptionSelectionPart2Enabled && iterationCounter > 1)
-                        {
-                            //4th round: AS part II
-                            foreach (var agentGroup in agentGroups)
-                            {
-                                foreach (IAgent agent in agentGroup)
-                                {
-                                    foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
-                                    {
-                                        foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy(g => g.Key.PositionNumber))
-                                        {
-                                            foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
-                                            {
-                                                BeforeActionSelection(agent, site);
-
-                                                //action selection process part II
-                                                acts.ExecutePartII(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
-                                            }
+                                            //action selection process part II
+                                            acts.ExecutePartII(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
-                    if (processConfiguration.ActionTakingEnabled)
-                    {
-                        //5th round: TA
-                        foreach (var agentGroup in agentGroups)
-                        {
-                            foreach (IAgent agent in agentGroup)
-                            {
-                                foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
-                                {
-                                    at.Execute(agent, currentIteration[agent], site);
-
-                                    AfterActionTaking(agent, site);
-                                }
-                            }
-                        }
-                    }
-
-                    if (processConfiguration.AlgorithmStopIfAllAgentsSelectDoNothing && iterationCounter > 1)
-                    {
-                        if (!currentIteration.SelectMany(kvp => kvp.Value.DecisionOptionsHistories.Values.SelectMany(rh => rh.Activated)).Any())
-                        {
-                            algorithmStoppage = true;
-                        }
-                    }
-
-                    PostIterationCalculations(iterationCounter);
-
-                    PostIterationStatistic(iterationCounter);
-
-                    if (processConfiguration.AgentsDeactivationEnabled && iterationCounter > 1)
-                    {
-                        AgentsDeactivation();
-                    }
-
-                    AfterDeactivation(iterationCounter);
-
-                    if (processConfiguration.ReproductionEnabled && iterationCounter > 1)
-                    {
-                        Reproduction(0);
-                    }
-
-                    if (algorithmStoppage || agentList.ActiveAgents.Length == 0)
-                        break;
-
-                    Maintenance();
                 }
+
+                if (processConfiguration.ActionTakingEnabled)
+                {
+                    //5th round: TA
+                    foreach (var agentGroup in agentGroups)
+                    {
+                        foreach (IAgent agent in agentGroup)
+                        {
+                            foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                            {
+                                at.Execute(agent, currentIteration[agent], site);
+
+                                AfterActionTaking(agent, site);
+                            }
+                        }
+                    }
+                }
+
+                if (processConfiguration.AlgorithmStopIfAllAgentsSelectDoNothing && iterationCounter > 1)
+                {
+                    if (!currentIteration.SelectMany(kvp => kvp.Value.DecisionOptionsHistories.Values.SelectMany(rh => rh.Activated)).Any())
+                    {
+                        algorithmStoppage = true;
+                    }
+                }
+
+                PostIterationCalculations(iterationCounter);
+
+                PostIterationStatistic(iterationCounter);
+
+                if (processConfiguration.AgentsDeactivationEnabled && iterationCounter > 1)
+                {
+                    AgentsDeactivation();
+                }
+
+                AfterDeactivation(iterationCounter);
+
+                if (processConfiguration.ReproductionEnabled && iterationCounter > 1)
+                {
+                    Reproduction(0);
+                }
+
+                if (algorithmStoppage || agentList.ActiveAgents.Length == 0)
+                    break;
+
+                Maintenance();
             }
         }
     }
+}
