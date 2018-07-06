@@ -84,7 +84,7 @@ namespace Common.Processes
 
             if (layerConfiguration != null)
             {
-                if (goal.Tendency == "Maximize")
+                if (goal.Tendency == "Maximize" || goal.Tendency == "Minimize")
                 {
                     var maxGoalValue = agent.AssignedDecisionOptions
                         .Where(kh => kh.Consequent.Param == goal.ReferenceVariable)
@@ -102,13 +102,6 @@ namespace Common.Processes
 
                     return Math.Abs(goalState.DiffCurrentAndFocal / (goalState.FocalValue - minGoalValue));
                 }
-
-
-                if (goal.Tendency == "Minimize")
-                {
-
-                }
-
 
                 throw new SosielAlgorithmException(
                     "Cannot calculate relative difference between goal value and focal goal value for tendency" +
