@@ -27,9 +27,9 @@ namespace Common.Algorithm
         protected GoalSelecting gs = new GoalSelecting();
         protected AnticipatoryLearning al = new AnticipatoryLearning();
         protected CounterfactualThinking ct = new CounterfactualThinking();
-        protected Innovation it = new Innovation();
+        protected Innovation innovation = new Innovation();
         protected SocialLearning sl = new SocialLearning();
-        protected ActionSelection acts = new ActionSelection();
+        protected Satisficing satisficing = new Satisficing();
         protected ActionTaking at = new ActionTaking();
 
         protected Demographic demographic;
@@ -270,7 +270,7 @@ namespace Common.Algorithm
                                                         {
                                                             //innovation process
                                                             if (CTResult == false || matchedDecisionOptions.Length < 2)
-                                                                it.Execute(agent, iterations.Last, selectedGoal, layer.Key, site, probabilities);
+                                                                innovation.Execute(agent, iterations.Last, selectedGoal, layer.Key, site, probabilities);
                                                         }
                                                     }
                                                 }
@@ -317,12 +317,10 @@ namespace Common.Algorithm
                                 {
                                     foreach (var layer in set.GroupBy(h => h.Layer).OrderBy(g => g.Key.PositionNumber))
                                     {
-
                                         BeforeActionSelection(agent, site);
 
-
-                                        //action selection process part I
-                                        acts.ExecutePartI(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
+                                        //satisficing
+                                        satisficing.ExecutePartI(agent, iterations.Last, rankedGoals, layer.ToArray(), site);
                                     }
                                 }
                             }
@@ -346,7 +344,7 @@ namespace Common.Algorithm
                                             BeforeActionSelection(agent, site);
 
                                             //action selection process part II
-                                            acts.ExecutePartII(agent, iterations.Last, rankedGoals[agent], layer.ToArray(), site);
+                                            satisficing.ExecutePartII(agent, iterations.Last, rankedGoals, layer.ToArray(), site);
                                         }
                                     }
                                 }

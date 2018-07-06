@@ -93,7 +93,7 @@
     <Compile Include="Helpers\SosielProbabilityTables.cs" />
     <Compile Include="Helpers\SosielVariables.cs" />
     <Compile Include="Helpers\CSVHelper.cs" />
-    <Compile Include="Processes\ActionSelection.cs" />
+    <Compile Include="Processes\Satisficing.cs" />
     <Compile Include="Processes\ActionTaking.cs" />
     <Compile Include="Processes\AnticipatoryLearning.cs" />
     <Compile Include="Processes\CounterfactualThinking.cs" />

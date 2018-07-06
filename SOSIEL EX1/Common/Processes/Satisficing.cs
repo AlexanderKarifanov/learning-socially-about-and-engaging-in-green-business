@@ -13,7 +13,7 @@ namespace Common.Processes
     /// <summary>
     /// Action selection process implementation.
     /// </summary>
-    public class ActionSelection : VolatileProcess
+    public class Satisficing : VolatileProcess
     {
         Goal processedGoal;
         GoalState goalState;
@@ -60,9 +60,11 @@ namespace Common.Processes
         /// <param name="currentAgent"></param>
         /// <param name="decisionOption"></param>
         /// <param name="agentStates"></param>
-        void ShareCollectiveAction(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState> agentStates)
+        List<IAgent> SignalingInterest(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState> agentStates)
         {
             var scope = decisionOption.Scope;
+
+            var agents = new List<IAgent>();
 
             foreach (IAgent neighbour in currentAgent.ConnectedAgents
                 .Where(connected => connected[scope] == currentAgent[scope] || scope == null))
@@ -70,8 +72,11 @@ namespace Common.Processes
                 if (neighbour.AssignedDecisionOptions.Contains(decisionOption) == false)
                 {
                     neighbour.AssignNewDecisionOption(decisionOption, currentAgent.AnticipationInfluence[decisionOption]);
+                    agents.Add(neighbour);
                 }
             }
+
+            return agents;
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Common.Processes
         /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
         public void ExecutePartI(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration,
-            Goal[] rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
+            Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
         {
             decisionOptionForActivating = null;
 
@@ -96,7 +101,7 @@ namespace Common.Processes
 
             DecisionOptionsHistory history = agentState.DecisionOptionsHistories[site];
 
-            processedGoal = rankedGoals.First(g => processedDecisionOptions.First().Layer.Set.AssociatedWith.Contains(g));
+            processedGoal = rankedGoals[agent].First(g => processedDecisionOptions.First().Layer.Set.AssociatedWith.Contains(g));
             goalState = agentState.GoalsState[processedGoal];
 
             matchedDecisionOptions = processedDecisionOptions.Except(history.Blocked).Where(h => h.IsMatch(agent)).ToArray();
@@ -125,7 +130,26 @@ namespace Common.Processes
 
             if (decisionOptionForActivating.IsCollectiveAction)
             {
-                ShareCollectiveAction(agent, decisionOptionForActivating, lastIteration.Value);
+                var agents = SignalingInterest(agent, decisionOptionForActivating, lastIteration.Value);
+
+                if (agents.Count > 0)
+                {
+                    foreach (var a in agents)
+                    {
+                        var agentHistory = lastIteration.Value[a].DecisionOptionsHistories[site];
+                        var layer = decisionOptionForActivating.Layer;
+                        if (agentHistory.Activated.Any(h => h.Layer == layer))
+                        {
+                            //clean previous choice
+                            agentHistory.Activated.RemoveAll(h => h.Layer == layer);
+                            agentHistory.Matched.RemoveAll(h => h.Layer == layer);
+
+                            var decisionOpts = a.AssignedDecisionOptions.Where(h => h.Layer == layer).ToArray();
+
+                            ExecutePartI(a, lastIteration, rankedGoals, decisionOpts, site);
+                        }
+                    }
+                }
             }
 
             if (decisionOptionForActivating != null)
@@ -145,7 +169,7 @@ namespace Common.Processes
         /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
         public void ExecutePartII(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration,
-            Goal[] rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
+            Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
         {
             AgentState agentState = lastIteration.Value[agent];
 

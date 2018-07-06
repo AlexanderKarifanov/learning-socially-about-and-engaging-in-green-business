@@ -75,7 +75,7 @@ namespace SOSIEL_EX1
 
             InitializeProbabilities();
 
-            UseDemographic();
+            //UseDemographic();
 
             AfterInitialization();
         }
@@ -238,7 +238,7 @@ namespace SOSIEL_EX1
                         {
                             agent[AlgorithmVariables.HouseholdIncome] = householdIncome;
                             agent[AlgorithmVariables.HouseholdExpenses] = householdExpenses;
-                            agent[AlgorithmVariables.HouseholdSavings] = householdSavings;
+                            agent[AlgorithmVariables.HouseholdSavings] += householdSavings;
                         });
                     });
             }
