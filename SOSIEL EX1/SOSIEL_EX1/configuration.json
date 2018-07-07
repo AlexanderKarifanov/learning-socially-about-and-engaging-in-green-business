@@ -1,6 +1,7 @@
 ﻿{
   "AlgorithmConfiguration": {
     "NumberOfIterations": 10,
+    "UseDimographicProcesses": false,
 
     "DemographicConfiguration": {
       "MaximumAge": 110,

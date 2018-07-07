@@ -75,7 +75,10 @@ namespace SOSIEL_EX1
 
             InitializeProbabilities();
 
-            UseDemographic();
+            if (_configuration.AlgorithmConfiguration.UseDimographicProcesses)
+            {
+                UseDemographic();
+            }
 
             AfterInitialization();
         }
@@ -84,7 +87,7 @@ namespace SOSIEL_EX1
         {
             base.UseDemographic();
 
-            demographic = new Demographic(_configuration.AlgorithmConfiguration.DemographicConfiguration, 
+            demographic = new Demographic(_configuration.AlgorithmConfiguration.DemographicConfiguration,
                 probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.BirthProbabilityTable),
                 probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.DeathProbabilityTable));
         }
@@ -250,7 +253,7 @@ namespace SOSIEL_EX1
         {
             base.Maintenance();
 
-            var hmAgents = agentList.Agents.Where(a=>a.Prototype.NamePrefix == "HM");
+            var hmAgents = agentList.Agents.Where(a => a.Prototype.NamePrefix == "HM");
 
             hmAgents.ForEach(agent =>
             {
