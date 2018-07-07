@@ -71,6 +71,7 @@ namespace Common.Processes
                     child.SetId(agentList.Agents.Count + 1);
                     child[SosielVariables.Household] = baseAgent[SosielVariables.Household];
                     child[SosielVariables.NuclearFamily] = baseAgent[SosielVariables.NuclearFamily];
+                    child[SosielVariables.ExtendedFamily] = baseAgent[SosielVariables.ExtendedFamily];
 
                     var extendedFamilies = baseAgent[SosielVariables.ExtendedFamily] as List<string>;
 

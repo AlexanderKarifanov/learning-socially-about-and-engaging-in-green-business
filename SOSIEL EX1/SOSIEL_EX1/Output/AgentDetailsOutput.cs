@@ -10,7 +10,9 @@
 
         public int Age { get; set; }
 
-        public int NumberOfKH { get; set; }
+        public bool IsAlive { get; set; }
+
+        public int NumberOfDO { get; set; }
 
         public double Income { get; set; }
 

@@ -12,7 +12,7 @@
       "HomosexualTypeRate": 0.5,
       "PairingAgeMin": 18,
       "PairingAgeMax": 50,
-      "YearsBetweenBirths": 2,
+      "YearsBetweenBirths": 3,
       "MinimumAgeForHouseholdHead": 18
     },
 

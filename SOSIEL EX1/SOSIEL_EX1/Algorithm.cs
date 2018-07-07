@@ -75,7 +75,7 @@ namespace SOSIEL_EX1
 
             InitializeProbabilities();
 
-            //UseDemographic();
+            UseDemographic();
 
             AfterInitialization();
         }
@@ -250,12 +250,41 @@ namespace SOSIEL_EX1
         {
             base.Maintenance();
 
-            var hmAgents = agentList.GetAgentsWithPrefix("HM");
+            var hmAgents = agentList.Agents.Where(a=>a.Prototype.NamePrefix == "HM");
 
             hmAgents.ForEach(agent =>
             {
                 //increase household members age
-                agent[AlgorithmVariables.Age] += 1;
+
+                if ((bool)agent[AlgorithmVariables.IsActive])
+                {
+                    agent[AlgorithmVariables.Age] += 1;
+                }
+                else
+                {
+                    agent[AlgorithmVariables.AgentIncome] = 0;
+                    agent[AlgorithmVariables.AgentExpenses] = 0;
+                    agent[AlgorithmVariables.HouseholdSavings] = 0;
+                }
+            });
+
+
+        }
+
+        protected override void PostIterationCalculations(int iteration)
+        {
+            base.PostIterationCalculations(iteration);
+
+            var hmAgents = agentList.Agents.Where(a => a.Prototype.NamePrefix == "HM");
+
+            hmAgents.ForEach(agent =>
+            {
+                if (agent[AlgorithmVariables.IsActive] == false)
+                {
+                    agent[AlgorithmVariables.AgentIncome] = 0;
+                    agent[AlgorithmVariables.AgentExpenses] = 0;
+                    agent[AlgorithmVariables.HouseholdSavings] = 0;
+                }
             });
         }
 
@@ -271,10 +300,11 @@ namespace SOSIEL_EX1
                     Iteration = iteration,
                     AgentId = agent.Id,
                     Age = agent[AlgorithmVariables.Age],
+                    IsAlive = agent[AlgorithmVariables.IsActive],
                     Income = agent[AlgorithmVariables.AgentIncome],
                     Expenses = agent[AlgorithmVariables.AgentExpenses],
                     Savings = agent[AlgorithmVariables.HouseholdSavings],
-                    NumberOfKH = agent.AssignedDecisionOptions.Count
+                    NumberOfDO = agent.AssignedDecisionOptions.Count
                 };
 
                 CSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);
