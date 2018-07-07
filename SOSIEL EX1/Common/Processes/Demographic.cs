@@ -120,6 +120,8 @@ namespace Common.Processes
                     .Where(a => a[SosielVariables.Gender] == secondPartnerGender)
                     .RandomizeOne();
 
+                if(firstPartner == null || secondPartner == null) return;
+
                 var newNuclearFamily = Guid.NewGuid().ToString();
 
                 var extendedFamilies = new List<string> { firstPartner[SosielVariables.NuclearFamily], newNuclearFamily, secondPartner[SosielVariables.NuclearFamily] };
@@ -135,6 +137,9 @@ namespace Common.Processes
                 firstPartner[SosielVariables.ExtendedFamily] = extendedFamilies;
                 secondPartner[SosielVariables.NuclearFamily] = newNuclearFamily;
                 secondPartner[SosielVariables.ExtendedFamily] = extendedFamilies;
+
+                firstPartner[SosielVariables.PairStatus] = PairStatus.Paired;
+                secondPartner[SosielVariables.PairStatus] = PairStatus.Paired;
             }
         }
 

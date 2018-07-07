@@ -15,7 +15,7 @@ namespace Common.Helpers
         /// <param name="source"></par
         public static T RandomizeOne<T>(this IEnumerable<T> source)
         {
-            return RandomizeOne(source.ToArray());
+            return RandomizeOne(source.ToList());
         }
 
         /// <summary>
@@ -23,24 +23,11 @@ namespace Common.Helpers
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></par
-        public static T RandomizeOne<T>(this IList<T> source)
-        {
-            int position = LinearUniformRandom.GetInstance.Next(source.Count);
-
-            return source[position];
-        }
-
-        /// <summary>
-        /// Returns one element using linear uniform distribution.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <returns></returns>
         public static T RandomizeOne<T>(this List<T> source)
         {
             int position = LinearUniformRandom.GetInstance.Next(source.Count);
 
-            return source[position];
+            return source.Count > 0 ? source[position] : default(T);
         }
 
         private static IEnumerable<T> RandomizeEnumeration<T>(this IEnumerable<T> original)

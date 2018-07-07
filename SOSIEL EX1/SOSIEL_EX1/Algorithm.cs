@@ -232,13 +232,15 @@ namespace SOSIEL_EX1
                             householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentIncome]);
                         double householdExpenses =
                             householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentExpenses]);
-                        double householdSavings = householdIncome - householdExpenses;
+                        double iterationHouseholdSavings = householdIncome - householdExpenses;
+                        double householdSavings = householdAgents.Where(agent => agent.ContainsVariable(AlgorithmVariables.HouseholdSavings))
+                            .Select(agent => (double)agent[AlgorithmVariables.HouseholdSavings]).FirstOrDefault() + iterationHouseholdSavings;
 
                         householdAgents.ForEach(agent =>
                         {
                             agent[AlgorithmVariables.HouseholdIncome] = householdIncome;
                             agent[AlgorithmVariables.HouseholdExpenses] = householdExpenses;
-                            agent[AlgorithmVariables.HouseholdSavings] += householdSavings;
+                            agent[AlgorithmVariables.HouseholdSavings] = householdSavings;
                         });
                     });
             }

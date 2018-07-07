@@ -178,7 +178,9 @@ namespace Common.Processes
             DecisionOptionLayer layer = processedDecisionOptions.First().Layer;
 
 
-            DecisionOption selectedDecisionOptions = history.Activated.Single(r => r.Layer == layer);
+            DecisionOption selectedDecisionOptions = history.Activated.SingleOrDefault(r => r.Layer == layer);
+
+            if (selectedDecisionOptions == null) return;
 
             if (selectedDecisionOptions.IsCollectiveAction)
             {
