@@ -296,8 +296,14 @@ namespace SOSIEL_EX1
         {
             base.PostIterationStatistic(iteration);
 
+            var lastIteration = iterations.Last.Value;
+
             agentList.Agents.ForEach(agent =>
             {
+                AgentState agentState;
+
+                lastIteration.TryGetValue(agent, out agentState);
+
                 var details = new AgentDetailsOutput
                 {
                     Iteration = iteration,
@@ -307,7 +313,8 @@ namespace SOSIEL_EX1
                     Income = agent[AlgorithmVariables.AgentIncome],
                     Expenses = agent[AlgorithmVariables.AgentExpenses],
                     Savings = agent[AlgorithmVariables.HouseholdSavings],
-                    NumberOfDO = agent.AssignedDecisionOptions.Count
+                    NumberOfDO = agent.AssignedDecisionOptions.Count,
+                    ChosenDecisionOption = agentState != null ? string.Join("|", agentState.DecisionOptionsHistories[Site.DefaultSite].Activated.Select(opt => opt.Id)) : string.Empty
                 };
 
                 CSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);

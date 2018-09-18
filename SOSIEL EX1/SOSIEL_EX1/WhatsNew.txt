@@ -3,3 +3,8 @@
 New features:
  - Implement Demographic processes
  - Changes in goal prioritizing 
+
+SOSIEL EX1 1.0.6.6835
+
+New features:
+ - Add 'ChosenDecisionOption' result data to the output

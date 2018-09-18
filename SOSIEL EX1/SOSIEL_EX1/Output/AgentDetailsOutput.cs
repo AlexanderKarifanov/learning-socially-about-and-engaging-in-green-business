@@ -19,5 +19,7 @@
         public double Expenses { get; set; }
 
         public double Savings { get; set; }
+
+        public string ChosenDecisionOption { get; set; }
     }
 }
