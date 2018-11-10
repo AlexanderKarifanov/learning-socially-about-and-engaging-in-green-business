@@ -599,9 +599,7 @@
             "Importance": 1,
             "Value": 0
           }
-        },
-
-        "SocialNetwork": [ "H2" ]
+        }
       },
       {
         "PrototypeOfAgent": "HouseholdMember-Prototype",
