@@ -1,4 +1,9 @@
-﻿SOSIEL EX1 1.0.7.6842
+﻿SOSIEL EX1 2.0.1.6889
+
+New features:
+ - Upgraded to .Net Core
+
+SOSIEL EX1 1.0.7.6842
 
 Fixed bugs:
  - Agent selected a wrong decision option

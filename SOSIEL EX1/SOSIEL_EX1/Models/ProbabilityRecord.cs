@@ -13,7 +13,7 @@ namespace SOSIEL_EX1.Models
         public double Probability { get; set; }
     }
 
-    public sealed class ProbabilityRecordMap<T> : CsvClassMap<ProbabilityRecord<T>>
+    public sealed class ProbabilityRecordMap<T> : ClassMap<ProbabilityRecord<T>>
     {
         public ProbabilityRecordMap()
         {

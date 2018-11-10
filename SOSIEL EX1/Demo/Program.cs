@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Factory;
-
+using SOSIEL.Algorithm;
+using SOSIEL_EX1;
+using SOSIEL_EX1.Configuration;
 
 namespace Demo
 {
@@ -27,7 +28,9 @@ namespace Demo
             if (Directory.Exists(outputDirectory))
                 Directory.Delete(outputDirectory, true);
 
-            var algorithm = AlgorithmFactory.Create(algorithmConfigurationFilePath);
+            ConfigurationModel configuration = ConfigurationParser.ParseConfiguration(algorithmConfigurationFilePath);
+
+            IAlgorithm algorithm = new Algorithm(configuration);
 
             Console.WriteLine($"{algorithm.Name} algorithm is running....");
             outputDirectory = algorithm.Run();
@@ -35,7 +38,15 @@ namespace Demo
 
             WaitKeyPress();
 
-            Process.Start(Path.Combine(Directory.GetCurrentDirectory(), outputDirectory));
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    UseShellExecute = true,
+                    FileName = Path.Combine(Directory.GetCurrentDirectory(), outputDirectory)
+                }
+            };
+            process.Start();
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)

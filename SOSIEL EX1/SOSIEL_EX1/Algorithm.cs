@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Common.Algorithm;
-using Common.Configuration;
-using Common.Entities;
-using Common.Exceptions;
-using Common.Helpers;
-using Common.Processes;
+using SOSIEL.Algorithm;
+using SOSIEL.Configuration;
+using SOSIEL.Entities;
+using SOSIEL.Exceptions;
+using SOSIEL.Helpers;
+using SOSIEL.Processes;
 using SOSIEL_EX1.Configuration;
 using SOSIEL_EX1.Helpers;
 using SOSIEL_EX1.Output;
@@ -106,7 +106,7 @@ namespace SOSIEL_EX1
 
             InitialStateConfiguration initialState = _configuration.InitialState;
 
-            var networks = new Dictionary<string, List<Common.Entities.Agent>>();
+            var networks = new Dictionary<string, List<SOSIEL.Entities.Agent>>();
 
             //create agents, groupby is used for saving agents numeration, e.g. FE1, HM1. HM2 etc
             initialState.AgentsState.GroupBy(state => state.PrototypeOfAgent).ForEach((agentStateGroup) =>
@@ -119,7 +119,7 @@ namespace SOSIEL_EX1
                 {
                     for (int i = 0; i < agentState.NumberOfAgents; i++)
                     {
-                        Common.Entities.Agent agent = Agent.CreateAgent(agentState, prototype);
+                        SOSIEL.Entities.Agent agent = Agent.CreateAgent(agentState, prototype);
                         agent.SetId(index);
 
                         agents.Add(agent);

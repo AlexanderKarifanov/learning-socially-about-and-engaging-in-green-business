@@ -1,4 +1,4 @@
-﻿using Common.Helpers;
+﻿using SOSIEL.Helpers;
 
 namespace SOSIEL_EX1
 {

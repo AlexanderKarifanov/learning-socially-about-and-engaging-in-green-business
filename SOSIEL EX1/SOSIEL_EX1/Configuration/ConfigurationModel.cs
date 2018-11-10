@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Common.Configuration;
-using Common.Entities;
 using Newtonsoft.Json;
+using SOSIEL.Entities;
 
 namespace SOSIEL_EX1.Configuration
 {

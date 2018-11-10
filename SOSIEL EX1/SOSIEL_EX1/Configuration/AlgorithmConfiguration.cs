@@ -1,5 +1,5 @@
-﻿using Common.Configuration;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SOSIEL.Configuration;
 
 namespace SOSIEL_EX1.Configuration
 {

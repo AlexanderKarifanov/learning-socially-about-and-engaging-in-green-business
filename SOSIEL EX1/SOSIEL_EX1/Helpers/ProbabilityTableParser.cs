@@ -1,7 +1,6 @@
-﻿using System;
-using System.Linq;
-using Common.Entities;
-using Common.Helpers;
+﻿using System.Linq;
+using SOSIEL.Entities;
+using SOSIEL.Helpers;
 using SOSIEL_EX1.Models;
 
 namespace SOSIEL_EX1.Helpers

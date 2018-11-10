@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Entities;
-using Common.Helpers;
-using Common.Randoms;
+using SOSIEL.Entities;
+using SOSIEL.Helpers;
+using SOSIEL.Randoms;
 using SOSIEL_EX1.Configuration;
 
 namespace SOSIEL_EX1
 {
-    public sealed class Agent : Common.Entities.Agent
+    public sealed class Agent : SOSIEL.Entities.Agent
     {
         public AgentStateConfiguration AgentStateConfiguration { get; private set; }
 
-        public override Common.Entities.Agent Clone()
+        public override SOSIEL.Entities.Agent Clone()
         {
             Agent agent = (Agent)base.Clone();
 
             return agent;
         }
 
-        public override Common.Entities.Agent CreateChild(string gender)
+        public override SOSIEL.Entities.Agent CreateChild(string gender)
         {
             Agent child = (Agent)base.CreateChild(gender);
 
@@ -30,7 +30,7 @@ namespace SOSIEL_EX1
             return child;
         }
 
-        protected override Common.Entities.Agent CreateInstance()
+        protected override SOSIEL.Entities.Agent CreateInstance()
         {
             return new Agent();
         }

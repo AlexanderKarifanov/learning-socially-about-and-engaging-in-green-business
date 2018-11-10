@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOSIEL", "SOSIEL\SOSIEL.csproj", "{4F545110-4652-44D8-9CEC-B0F502BBE6AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{0EDE8497-E84B-4175-B3C7-14CBD3261CA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOSIEL_EX1", "SOSIEL_EX1\SOSIEL_EX1.csproj", "{3F36603A-B7B9-4990-95A9-98214F1B52FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Factory", "Factory\Factory.csproj", "{63AF9FF4-E7F0-4137-BD01-AE5792ACF2BB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOSIEL_EX1", "SOSIEL_EX1\SOSIEL_EX1.csproj", "{0895920B-DA02-46C8-858F-DA7B815BCF29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{5D397706-F9A3-4751-B52E-EDE4E6A8B40E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,34 +15,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50A0DC05-47BD-455A-B32E-CA2C9FC924FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EDE8497-E84B-4175-B3C7-14CBD3261CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EDE8497-E84B-4175-B3C7-14CBD3261CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EDE8497-E84B-4175-B3C7-14CBD3261CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EDE8497-E84B-4175-B3C7-14CBD3261CA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63AF9FF4-E7F0-4137-BD01-AE5792ACF2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63AF9FF4-E7F0-4137-BD01-AE5792ACF2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63AF9FF4-E7F0-4137-BD01-AE5792ACF2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63AF9FF4-E7F0-4137-BD01-AE5792ACF2BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0895920B-DA02-46C8-858F-DA7B815BCF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0895920B-DA02-46C8-858F-DA7B815BCF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0895920B-DA02-46C8-858F-DA7B815BCF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0895920B-DA02-46C8-858F-DA7B815BCF29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F545110-4652-44D8-9CEC-B0F502BBE6AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F545110-4652-44D8-9CEC-B0F502BBE6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F545110-4652-44D8-9CEC-B0F502BBE6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F545110-4652-44D8-9CEC-B0F502BBE6AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F36603A-B7B9-4990-95A9-98214F1B52FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F36603A-B7B9-4990-95A9-98214F1B52FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F36603A-B7B9-4990-95A9-98214F1B52FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F36603A-B7B9-4990-95A9-98214F1B52FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D397706-F9A3-4751-B52E-EDE4E6A8B40E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D397706-F9A3-4751-B52E-EDE4E6A8B40E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D397706-F9A3-4751-B52E-EDE4E6A8B40E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D397706-F9A3-4751-B52E-EDE4E6A8B40E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9DA2E64-D41B-422D-906B-F2E5011AE3F6}
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		PrimaryVersionType.Release|Any CPU = AssemblyVersionAttribute
-		UpdateAssemblyVersion.Release|Any CPU = True
-		UpdateAssemblyFileVersion.Release|Any CPU = False
-		UpdateAssemblyInfoVersion.Release|Any CPU = False
-		AssemblyVersionSettings.Release|Any CPU = None.None.Increment.DeltaDayStamp
 	EndGlobalSection
 EndGlobal
