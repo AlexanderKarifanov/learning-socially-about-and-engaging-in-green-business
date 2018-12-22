@@ -8,7 +8,7 @@ using SOSIEL.Randoms;
 
 namespace SOSIEL.Processes
 {
-    public class Demographic
+    public class Demographic<TSite>
     {
         private DemographicProcessesConfiguration _configuration;
         private ProbabilityTable<int> _birthProbability;
@@ -25,7 +25,7 @@ namespace SOSIEL.Processes
         }
 
 
-        public void ChangeDemographic(int iteration, Dictionary<IAgent, AgentState> iterationState, AgentList agents)
+        public void ChangeDemographic(int iteration, Dictionary<IAgent, AgentState<TSite>> iterationState, AgentList agents)
         {
             ProcessBirths(iteration, iterationState, agents);
 
@@ -34,7 +34,7 @@ namespace SOSIEL.Processes
             ProcessDeaths(agents.ActiveAgents);
         }
 
-        private void ProcessBirths(int iteration, Dictionary<IAgent, AgentState> iterationState, AgentList agentList)
+        private void ProcessBirths(int iteration, Dictionary<IAgent, AgentState<TSite>> iterationState, AgentList agentList)
         {
             var iterationAgents = new List<IAgent>();
 

@@ -8,7 +8,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Counterfactual thinking process implementation.
     /// </summary>
-    public class CounterfactualThinking : VolatileProcess
+    public class CounterfactualThinking<TSite> : VolatileProcess
     {
         bool confidence;
 
@@ -73,13 +73,13 @@ namespace SOSIEL.Processes
         /// <param name="layer"></param>
         /// <param name="site"></param>
         /// <returns></returns>
-        public bool Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Goal goal,
-            DecisionOption[] matched, DecisionOptionLayer layer, Site site)
+        public bool Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration, Goal goal,
+            DecisionOption[] matched, DecisionOptionLayer layer, TSite site)
         {
             confidence = false;
 
             //Period currentPeriod = periodModel.Value;
-            AgentState priorIterationAgentState = lastIteration.Previous.Value[agent];
+            AgentState<TSite> priorIterationAgentState = lastIteration.Previous.Value[agent];
 
             selectedGoal = goal;
 

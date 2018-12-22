@@ -10,7 +10,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Innovation process implementation.
     /// </summary>
-    public class Innovation
+    public class Innovation<TSite>
     {
         /// <summary>
         /// Executes agent innovation process for specific site
@@ -22,30 +22,37 @@ namespace SOSIEL.Processes
         /// <param name="site">The site.</param>
         /// <param name="probabilities">The probabilities.</param>
         /// <exception cref="Exception">Not implemented for AnticipatedDirection == 'stay'</exception>
-        public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Goal goal,
-            DecisionOptionLayer layer, Site site, Probabilities probabilities)
+        public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration, Goal goal,
+            DecisionOptionLayer layer, TSite site, Probabilities probabilities)
         {
-            Dictionary<IAgent, AgentState> currentIteration = lastIteration.Value;
-            Dictionary<IAgent, AgentState> priorIteration = lastIteration.Previous.Value;
+            Dictionary<IAgent, AgentState<TSite>> currentIteration = lastIteration.Value;
+            Dictionary<IAgent, AgentState<TSite>> priorIteration = lastIteration.Previous.Value;
 
             //gets prior period activated decision options
             DecisionOptionsHistory history = priorIteration[agent].DecisionOptionsHistories[site];
-            DecisionOption priorPeriodDecisionOption = history.Activated.FirstOrDefault(r=>r.Layer == layer);
+            DecisionOption protDecisionOption = history.Activated.FirstOrDefault(r=>r.Layer == layer);
 
-            LinkedListNode<Dictionary<IAgent, AgentState>> tempNode = lastIteration.Previous;
+            LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> tempNode = lastIteration.Previous;
 
             //if prior period decision option is do nothing then looking for any do something decision option
-            while (priorPeriodDecisionOption == null && tempNode.Previous != null)
+            while (protDecisionOption == null && tempNode.Previous != null)
             {
                 tempNode = tempNode.Previous;
 
                 history = tempNode.Value[agent].DecisionOptionsHistories[site];
 
-                priorPeriodDecisionOption = history.Activated.Single(r => r.Layer == layer);
+                protDecisionOption = history.Activated.Single(r => r.Layer == layer);
+            }
+
+            //if activated DO is missed, then select random DO
+            if (!agent.AssignedDecisionOptions.Contains(protDecisionOption))
+            {
+                protDecisionOption = agent.AssignedDecisionOptions.Where(a => a.Layer == protDecisionOption.Layer)
+                    .RandomizeOne();
             }
 
             //if the layer or prior period decision option are modifiable then generate new decision option
-            if (layer.LayerConfiguration.Modifiable || (!layer.LayerConfiguration.Modifiable && priorPeriodDecisionOption.IsModifiable))
+            if (layer.LayerConfiguration.Modifiable || (!layer.LayerConfiguration.Modifiable && protDecisionOption.IsModifiable))
             {
                 DecisionOptionLayerConfiguration parameters = layer.LayerConfiguration;
 
@@ -57,9 +64,9 @@ namespace SOSIEL.Processes
                 int min = parameters.MinValue(agent);
                 int max = parameters.MaxValue(agent);
 
-                double consequentValue = string.IsNullOrEmpty(priorPeriodDecisionOption.Consequent.VariableValue)
-                    ? priorPeriodDecisionOption.Consequent.Value
-                    : agent[priorPeriodDecisionOption.Consequent.VariableValue];
+                double consequentValue = string.IsNullOrEmpty(protDecisionOption.Consequent.VariableValue)
+                    ? protDecisionOption.Consequent.Value
+                    : agent[protDecisionOption.Consequent.VariableValue];
 
                 double newConsequent = consequentValue;
 
@@ -108,16 +115,18 @@ namespace SOSIEL.Processes
                         }
                 }
 
-                DecisionOptionConsequent consequent = DecisionOptionConsequent.Renew(priorPeriodDecisionOption.Consequent, newConsequent);
+                DecisionOptionConsequent consequent = DecisionOptionConsequent.Renew(protDecisionOption.Consequent, newConsequent);
                 #endregion
 
 
                 #region Generating antecedent
-                List<DecisionOptionAntecedentPart> antecedentList = new List<DecisionOptionAntecedentPart>(priorPeriodDecisionOption.Antecedent.Length);
+                List<DecisionOptionAntecedentPart> antecedentList = new List<DecisionOptionAntecedentPart>(protDecisionOption.Antecedent.Length);
 
-                foreach (DecisionOptionAntecedentPart antecedent in priorPeriodDecisionOption.Antecedent)
+                bool isTopLevelDO = protDecisionOption.Layer.PositionNumber == 1;
+
+                foreach (DecisionOptionAntecedentPart antecedent in protDecisionOption.Antecedent)
                 {
-                    dynamic newConst = agent[antecedent.Param];
+                    dynamic newConst = isTopLevelDO ? antecedent.Value : agent[antecedent.Param];
 
                     DecisionOptionAntecedentPart newAntecedent = DecisionOptionAntecedentPart.Renew(antecedent, newConst);
 
@@ -125,9 +134,9 @@ namespace SOSIEL.Processes
                 }
                 #endregion
 
-                AgentState agentState = currentIteration[agent];
+                AgentState<TSite> agentState = currentIteration[agent];
 
-                DecisionOption newDecisionOption = DecisionOption.Renew(priorPeriodDecisionOption, antecedentList.ToArray(), consequent);
+                DecisionOption newDecisionOption = DecisionOption.Renew(protDecisionOption, antecedentList.ToArray(), consequent);
 
 
                 //change base ai values for the new decision option
@@ -142,7 +151,7 @@ namespace SOSIEL.Processes
                 }
 
                 
-                Dictionary<Goal, double> baseAI = agent.AnticipationInfluence[priorPeriodDecisionOption];
+                Dictionary<Goal, double> baseAI = agent.AnticipationInfluence[protDecisionOption];
 
                 Dictionary<Goal, double> proportionalAI = new Dictionary<Goal, double>();
 
@@ -152,7 +161,7 @@ namespace SOSIEL.Processes
                 {
                     double ai = baseAI[g];
 
-                    ConsequentRelationship relationship = DecisionOptionLayerConfiguration.ConvertSign(priorPeriodDecisionOption.Layer.LayerConfiguration.ConsequentRelationshipSign[g.Name]);
+                    ConsequentRelationship relationship = DecisionOptionLayerConfiguration.ConvertSign(protDecisionOption.Layer.LayerConfiguration.ConsequentRelationshipSign[g.Name]);
 
                     double difference = Math.Abs(ai * consequentChangeProportion);
 
@@ -163,11 +172,11 @@ namespace SOSIEL.Processes
                             {
                                 if (relationship == ConsequentRelationship.Positive)
                                 {
-                                    ai -= difference;
+                                    ai += difference;
                                 }
                                 else
                                 {
-                                    ai += difference;
+                                    ai -= difference;
                                 }
 
                                 break;
@@ -176,11 +185,11 @@ namespace SOSIEL.Processes
                             {
                                 if (relationship == ConsequentRelationship.Positive)
                                 {
-                                    ai += difference;
+                                    ai -= difference;
                                 }
                                 else
                                 {
-                                    ai -= difference;
+                                    ai += difference;
                                 }
 
                                 break;

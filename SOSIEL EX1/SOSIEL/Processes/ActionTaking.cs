@@ -8,7 +8,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Action taking process implementation.
     /// </summary>
-    public class ActionTaking
+    public class ActionTaking<TSite>
     {
         /// <summary>
         /// Executes action taking.
@@ -16,7 +16,7 @@ namespace SOSIEL.Processes
         /// <param name="agent"></param>
         /// <param name="state"></param>
         /// <param name="site"></param>
-        public void Execute(IAgent agent, AgentState state, Site site)
+        public void Execute(IAgent agent, AgentState<TSite> state, TSite site)
         {
             DecisionOptionsHistory history = state.DecisionOptionsHistories[site];
 

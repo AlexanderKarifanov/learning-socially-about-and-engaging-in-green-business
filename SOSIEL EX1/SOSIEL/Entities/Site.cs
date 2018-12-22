@@ -5,12 +5,6 @@ namespace SOSIEL.Entities
 {
     public class Site : IEquatable<Site>
     {
-        private static Site _defaultSite = new Site();
-        public static Site DefaultSite
-        {
-            get { return _defaultSite; }
-        }
-
         public SiteType Type { get; set; }
 
         public int HorizontalPosition { get; set; }

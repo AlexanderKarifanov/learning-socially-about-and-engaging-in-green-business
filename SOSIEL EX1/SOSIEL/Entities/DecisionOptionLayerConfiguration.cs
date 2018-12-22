@@ -6,13 +6,13 @@ namespace SOSIEL.Entities
 {
     public sealed class DecisionOptionLayerConfiguration
     {
-        public bool Modifiable { get; private set; }
+        public bool Modifiable { get; set; }
 
-        public int MaxNumberOfDecisionOptions { get; private set; }
+        public int MaxNumberOfDecisionOptions { get; set; }
 
-        public int[] ConsequentValueInterval { get; private set; }
+        public int[] ConsequentValueInterval { get; set; }
 
-        public Dictionary<string, string> ConsequentRelationshipSign { get; private set; }
+        public Dictionary<string, string> ConsequentRelationshipSign { get; set; }
 
         public static ConsequentRelationship ConvertSign(string sign)
         {
@@ -28,9 +28,9 @@ namespace SOSIEL.Entities
             }
         }
 
-        public string MinConsequentReference { get; private set; }
+        public string MinConsequentReference { get; set; }
 
-        public string MaxConsequentReference { get; private set; }
+        public string MaxConsequentReference { get; set; }
 
         public DecisionOptionLayerConfiguration()
         {

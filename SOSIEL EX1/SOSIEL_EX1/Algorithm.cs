@@ -14,7 +14,7 @@ using SOSIEL_EX1.Output;
 
 namespace SOSIEL_EX1
 {
-    public sealed class Algorithm : SosielAlgorithm, IAlgorithm
+    public sealed class Algorithm : SosielAlgorithm<Site>, IAlgorithm
     {
         public string Name { get { return "SOSIEL"; } }
 
@@ -54,7 +54,7 @@ namespace SOSIEL_EX1
         {
             Initialize();
 
-            var sites = new Site[] { Site.DefaultSite };
+            var sites = new Site[] { DefaultSite };
 
             Enumerable.Range(1, _configuration.AlgorithmConfiguration.NumberOfIterations).ForEach(iteration =>
             {
@@ -87,7 +87,7 @@ namespace SOSIEL_EX1
         {
             base.UseDemographic();
 
-            demographic = new Demographic(_configuration.AlgorithmConfiguration.DemographicConfiguration,
+            demographic = new Demographic<Site>(_configuration.AlgorithmConfiguration.DemographicConfiguration,
                 probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.BirthProbabilityTable),
                 probabilities.GetProbabilityTable<int>(AlgorithmProbabilityTables.DeathProbabilityTable));
         }
@@ -194,14 +194,14 @@ namespace SOSIEL_EX1
         }
 
         /// <inheritdoc />
-        protected override Dictionary<IAgent, AgentState> InitializeFirstIterationState()
+        protected override Dictionary<IAgent, AgentState<Site>> InitializeFirstIterationState()
         {
-            var states = new Dictionary<IAgent, AgentState>();
+            var states = new Dictionary<IAgent, AgentState<Site>>();
 
             agentList.Agents.ForEach(agent =>
             {
                 //creates empty agent state
-                AgentState agentState = AgentState.Create(agent.Prototype.IsSiteOriented);
+                AgentState<Site> agentState = AgentState<Site>.Create(agent.Prototype.IsSiteOriented);
 
                 //copy generated goal importance
                 agent.InitialGoalStates.ForEach(kvp =>
@@ -216,37 +216,6 @@ namespace SOSIEL_EX1
             });
 
             return states;
-        }
-
-        protected override void PreIterationCalculations(int iteration)
-        {
-            base.PreIterationCalculations(iteration);
-
-            if (iteration > 1)
-            {
-                //----
-                //calculate household values (income, expenses, savings) for each agent in specific household
-                var hmAgents = agentList.GetAgentsWithPrefix("HM");
-
-                hmAgents.GroupBy(agent => agent[SosielVariables.Household])
-                    .ForEach(householdAgents =>
-                    {
-                        double householdIncome =
-                            householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentIncome]);
-                        double householdExpenses =
-                            householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentExpenses]);
-                        double iterationHouseholdSavings = householdIncome - householdExpenses;
-                        double householdSavings = householdAgents.Where(agent => agent.ContainsVariable(AlgorithmVariables.HouseholdSavings))
-                            .Select(agent => (double)agent[AlgorithmVariables.HouseholdSavings]).FirstOrDefault() + iterationHouseholdSavings;
-
-                        householdAgents.ForEach(agent =>
-                        {
-                            agent[AlgorithmVariables.HouseholdIncome] = householdIncome;
-                            agent[AlgorithmVariables.HouseholdExpenses] = householdExpenses;
-                            agent[AlgorithmVariables.HouseholdSavings] = householdSavings;
-                        });
-                    });
-            }
         }
 
         protected override void Maintenance()
@@ -278,17 +247,28 @@ namespace SOSIEL_EX1
         {
             base.PostIterationCalculations(iteration);
 
-            var hmAgents = agentList.Agents.Where(a => a.Prototype.NamePrefix == "HM");
+            //----
+            //calculate household values (income, expenses, savings) for each agent in specific household
+            var hmAgents = agentList.GetAgentsWithPrefix("HM");
 
-            hmAgents.ForEach(agent =>
-            {
-                if (agent[AlgorithmVariables.IsActive] == false)
+            hmAgents.GroupBy(agent => agent[SosielVariables.Household])
+                .ForEach(householdAgents =>
                 {
-                    agent[AlgorithmVariables.AgentIncome] = 0;
-                    agent[AlgorithmVariables.AgentExpenses] = 0;
-                    agent[AlgorithmVariables.HouseholdSavings] = 0;
-                }
-            });
+                    double householdIncome =
+                        householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentIncome]);
+                    double householdExpenses =
+                        householdAgents.Sum(agent => (double)agent[AlgorithmVariables.AgentExpenses]);
+                    double iterationHouseholdSavings = householdIncome - householdExpenses;
+                    double householdSavings = householdAgents.Where(agent => agent.ContainsVariable(AlgorithmVariables.HouseholdSavings))
+                                                  .Select(agent => (double)agent[AlgorithmVariables.HouseholdSavings]).FirstOrDefault() + iterationHouseholdSavings;
+
+                    householdAgents.ForEach(agent =>
+                    {
+                        agent[AlgorithmVariables.HouseholdIncome] = householdIncome;
+                        agent[AlgorithmVariables.HouseholdExpenses] = householdExpenses;
+                        agent[AlgorithmVariables.HouseholdSavings] = householdSavings;
+                    });
+                });
         }
 
         /// <inheritdoc />
@@ -300,7 +280,7 @@ namespace SOSIEL_EX1
 
             agentList.Agents.ForEach(agent =>
             {
-                AgentState agentState;
+                AgentState<Site> agentState;
 
                 lastIteration.TryGetValue(agent, out agentState);
 
@@ -314,7 +294,7 @@ namespace SOSIEL_EX1
                     Expenses = agent[AlgorithmVariables.AgentExpenses],
                     Savings = agent[AlgorithmVariables.HouseholdSavings],
                     NumberOfDO = agent.AssignedDecisionOptions.Count,
-                    ChosenDecisionOption = agentState != null ? string.Join("|", agentState.DecisionOptionsHistories[Site.DefaultSite].Activated.Select(opt => opt.Id)) : string.Empty
+                    ChosenDecisionOption = agentState != null ? string.Join("|", agentState.DecisionOptionsHistories[DefaultSite].Activated.Select(opt => opt.Id)) : string.Empty
                 };
 
                 CSVHelper.AppendTo(_outputFolder + string.Format(AgentDetailsOutput.FileName, agent.Id), details);

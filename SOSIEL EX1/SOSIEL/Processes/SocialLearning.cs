@@ -8,7 +8,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Social learning process implementation.
     /// </summary>
-    public class SocialLearning
+    public class SocialLearning<TSite>
     {
         /// <summary>
         /// Executes social learning process of current agent for specific decision option set layer
@@ -16,13 +16,13 @@ namespace SOSIEL.Processes
         /// <param name="agent"></param>
         /// <param name="lastIteration"></param>
         /// <param name="layer"></param>
-        public void ExecuteLearning(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, DecisionOptionLayer layer)
+        public void ExecuteLearning(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration, DecisionOptionLayer layer)
         {
-            Dictionary<IAgent, AgentState> priorIterationState = lastIteration.Previous.Value;
+            Dictionary<IAgent, AgentState<TSite>> priorIterationState = lastIteration.Previous.Value;
 
             agent.ConnectedAgents.Randomize().ForEach(neighbour =>
             {
-                AgentState priorIteration;
+                AgentState<TSite> priorIteration;
                 if (!priorIterationState.TryGetValue(neighbour, out priorIteration)) return;
 
                 IEnumerable<DecisionOption> activatedDecisionOptions = priorIteration.DecisionOptionsHistories

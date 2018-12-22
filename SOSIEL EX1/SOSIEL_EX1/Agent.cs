@@ -120,14 +120,14 @@ namespace SOSIEL_EX1
             });
 
 
-            InitializeDynamicvariables(agent);
+            InitializeDynamicVariables(agent);
 
             agent.AgentStateConfiguration = agentConfiguration;
 
             return agent;
         }
 
-        private static void InitializeDynamicvariables(Agent agent)
+        private static void InitializeDynamicVariables(Agent agent)
         {
             agent[AlgorithmVariables.IsActive] = true;
         }

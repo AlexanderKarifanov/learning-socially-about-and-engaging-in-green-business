@@ -64,7 +64,7 @@ namespace SOSIEL.Entities
                    || (other != null
                        && Param == other.Param
                        && Value == other.Value
-                       && VariableValue == other.VariableValue);
+                       && (string.IsNullOrEmpty(VariableValue) == string.IsNullOrEmpty(other.VariableValue) || VariableValue == other.VariableValue));
         }
 
         public override bool Equals(object obj)

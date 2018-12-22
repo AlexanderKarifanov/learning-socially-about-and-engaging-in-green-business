@@ -78,7 +78,7 @@
           "Layer": {
             "1": {
               "Modifiable": false,
-              "MaxNumberOfRules": 7
+              "MaxNumberOfDecisionOptions": 7
             }
           }
         }

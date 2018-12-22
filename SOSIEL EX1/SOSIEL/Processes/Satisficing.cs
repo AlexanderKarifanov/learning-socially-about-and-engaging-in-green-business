@@ -8,7 +8,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Action selection process implementation.
     /// </summary>
-    public class Satisficing : VolatileProcess
+    public class Satisficing<TSite> : VolatileProcess
     {
         Goal processedGoal;
         GoalState goalState;
@@ -55,7 +55,7 @@ namespace SOSIEL.Processes
         /// <param name="currentAgent"></param>
         /// <param name="decisionOption"></param>
         /// <param name="agentStates"></param>
-        List<IAgent> SignalingInterest(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState> agentStates)
+        List<IAgent> SignalingInterest(IAgent currentAgent, DecisionOption decisionOption, Dictionary<IAgent, AgentState<TSite>> agentStates)
         {
             var scope = decisionOption.Scope;
 
@@ -82,12 +82,12 @@ namespace SOSIEL.Processes
         /// <param name="rankedGoals"></param>
         /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
-        public void ExecutePartI(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
+        public void ExecutePartI(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration, Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, TSite site)
         {
             decisionOptionForActivating = null;
 
-            AgentState agentState = lastIteration.Value[agent];
-            AgentState priorPeriod = lastIteration.Previous?.Value[agent];
+            AgentState<TSite> agentState = lastIteration.Value[agent];
+            AgentState<TSite> priorPeriod = lastIteration.Previous?.Value[agent];
 
             //adds new decisionOption history for specific site if it doesn't exist
             if (agentState.DecisionOptionsHistories.ContainsKey(site) == false)
@@ -161,9 +161,9 @@ namespace SOSIEL.Processes
         /// <param name="rankedGoals"></param>
         /// <param name="processedDecisionOptions"></param>
         /// <param name="site"></param>
-        public void ExecutePartII(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration, Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, Site site)
+        public void ExecutePartII(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration, Dictionary<IAgent, Goal[]> rankedGoals, DecisionOption[] processedDecisionOptions, TSite site)
         {
-            AgentState agentState = lastIteration.Value[agent];
+            AgentState<TSite> agentState = lastIteration.Value[agent];
 
             DecisionOptionsHistory history = agentState.DecisionOptionsHistories[site];
 

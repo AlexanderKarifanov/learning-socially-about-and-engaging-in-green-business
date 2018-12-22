@@ -7,8 +7,10 @@ using SOSIEL.Processes;
 
 namespace SOSIEL.Algorithm
 {
-    public abstract class SosielAlgorithm
+    public abstract class SosielAlgorithm<TSite> where TSite : new()
     {
+        protected readonly TSite DefaultSite = new TSite();
+
         private int numberOfIterations;
         private int iterationCounter;
         private ProcessesConfiguration processConfiguration;
@@ -16,7 +18,7 @@ namespace SOSIEL.Algorithm
         protected int numberOfAgentsAfterInitialize;
         protected bool algorithmStoppage = false;
         protected AgentList agentList;
-        protected LinkedList<Dictionary<IAgent, AgentState>> iterations = new LinkedList<Dictionary<IAgent, AgentState>>();
+        protected LinkedList<Dictionary<IAgent, AgentState<TSite>>> iterations = new LinkedList<Dictionary<IAgent, AgentState<TSite>>>();
         protected Dictionary<IAgent, Goal[]> rankedGoals;
 
         protected Probabilities probabilities = new Probabilities();
@@ -24,14 +26,14 @@ namespace SOSIEL.Algorithm
         //processes
         protected GoalPrioritizing gp = new GoalPrioritizing();
         protected GoalSelecting gs = new GoalSelecting();
-        protected AnticipatoryLearning al = new AnticipatoryLearning();
-        protected CounterfactualThinking ct = new CounterfactualThinking();
-        protected Innovation innovation = new Innovation();
-        protected SocialLearning sl = new SocialLearning();
-        protected Satisficing satisficing = new Satisficing();
-        protected ActionTaking at = new ActionTaking();
+        protected AnticipatoryLearning<TSite> al = new AnticipatoryLearning<TSite>();
+        protected CounterfactualThinking<TSite> ct = new CounterfactualThinking<TSite>();
+        protected Innovation<TSite> innovation = new Innovation<TSite>();
+        protected SocialLearning<TSite> sl = new SocialLearning<TSite>();
+        protected Satisficing<TSite> satisficing = new Satisficing<TSite>();
+        protected ActionTaking<TSite> at = new ActionTaking<TSite>();
 
-        protected Demographic demographic;
+        protected Demographic<TSite> demographic;
 
 
         public SosielAlgorithm(int numberOfIterations, ProcessesConfiguration processConfiguration)
@@ -52,7 +54,7 @@ namespace SOSIEL.Algorithm
         /// Executes iteration state initializing. Executed after InitializeAgents.
         /// </summary>
         /// <returns></returns>
-        protected abstract Dictionary<IAgent, AgentState> InitializeFirstIterationState();
+        protected abstract Dictionary<IAgent, AgentState<TSite>> InitializeFirstIterationState();
 
         protected virtual void UseDemographic()
         {
@@ -89,7 +91,7 @@ namespace SOSIEL.Algorithm
         /// </summary>
         /// <param name="agent"></param>
         /// <param name="site"></param>
-        protected virtual void BeforeActionSelection(IAgent agent, Site site) { }
+        protected virtual void BeforeActionSelection(IAgent agent, TSite site) { }
 
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace SOSIEL.Algorithm
         /// </summary>
         /// <param name="agent"></param>
         /// <param name="site"></param>
-        protected virtual void AfterActionTaking(IAgent agent, Site site) { }
+        protected virtual void AfterActionTaking(IAgent agent, TSite site) { }
 
 
         /// <summary>
@@ -105,7 +107,7 @@ namespace SOSIEL.Algorithm
         /// </summary>
         /// <param name="agent"></param>
         /// <param name="site"></param>
-        protected virtual void BeforeCounterfactualThinking(IAgent agent, Site site) { }
+        protected virtual void BeforeCounterfactualThinking(IAgent agent, TSite site) { }
 
 
         /// <summary>
@@ -150,7 +152,7 @@ namespace SOSIEL.Algorithm
             agentList.ActiveAgents.ForEach(a =>
             {
                 //increment decision option activation freshness
-                Enumerable.ToArray<DecisionOption>(a.DecisionOptionActivationFreshness.Keys).ForEach(k =>
+                a.DecisionOptionActivationFreshness.Keys.ToList().ForEach(k =>
                 {
                     a.DecisionOptionActivationFreshness[k] += 1;
                 });
@@ -162,20 +164,23 @@ namespace SOSIEL.Algorithm
         /// Executes SOSIEL Algorithm
         /// </summary>
         /// <param name="activeSites"></param>
-        protected void RunSosiel(IEnumerable<Site> activeSites)
+        protected void RunSosiel(ICollection<TSite> activeSites)
         {
             for (int i = 1; i <= numberOfIterations; i++)
             {
                 iterationCounter++;
 
-                Dictionary<IAgent, AgentState> currentIteration;
+                PreIterationCalculations(iterationCounter);
+                PreIterationStatistic(iterationCounter);
+
+                Dictionary<IAgent, AgentState<TSite>> currentIteration;
 
                 if (iterationCounter > 1)
-                    currentIteration = iterations.AddLast(new Dictionary<IAgent, AgentState>()).Value;
+                    currentIteration = iterations.AddLast(new Dictionary<IAgent, AgentState<TSite>>()).Value;
                 else
                     currentIteration = iterations.AddLast(InitializeFirstIterationState()).Value;
 
-                Dictionary<IAgent, AgentState> priorIteration = iterations.Last.Previous?.Value;
+                Dictionary<IAgent, AgentState<TSite>> priorIteration = iterations.Last.Previous?.Value;
 
                 rankedGoals = new Dictionary<IAgent, Goal[]>(agentList.Agents.Count);
 
@@ -195,13 +200,10 @@ namespace SOSIEL.Algorithm
                 {
                     demographic.ChangeDemographic(iterationCounter, currentIteration, agentList);
                 }
+                
+                TSite[] orderedSites = activeSites.Randomize().ToArray();
 
-                PreIterationCalculations(iterationCounter);
-                PreIterationStatistic(iterationCounter);
-
-                Site[] orderedSites = activeSites.Randomize().ToArray();
-
-                Site[] notSiteOriented = new Site[] { Site.DefaultSite };
+                TSite[] notSiteOriented = new TSite[] { DefaultSite };
 
                 if (iterationCounter == 1)
                 {
@@ -237,7 +239,7 @@ namespace SOSIEL.Algorithm
                             {
                                 if (rankedGoals[agent].Any(g => currentIteration[agent].GoalsState.Any(kvp => kvp.Value.Confidence == false)))
                                 {
-                                    foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                                    foreach (TSite site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                     {
                                         BeforeCounterfactualThinking(agent, site);
 
@@ -310,7 +312,7 @@ namespace SOSIEL.Algorithm
                     {
                         foreach (IAgent agent in agentGroup)
                         {
-                            foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                            foreach (TSite site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                             {
                                 foreach (var set in agent.AssignedDecisionOptions.GroupBy(h => h.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                 {
@@ -334,7 +336,7 @@ namespace SOSIEL.Algorithm
                         {
                             foreach (IAgent agent in agentGroup)
                             {
-                                foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                                foreach (TSite site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                                 {
                                     foreach (var set in agent.AssignedDecisionOptions.GroupBy(r => r.Layer.Set).OrderBy(g => g.Key.PositionNumber))
                                     {
@@ -359,7 +361,7 @@ namespace SOSIEL.Algorithm
                     {
                         foreach (IAgent agent in agentGroup)
                         {
-                            foreach (Site site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
+                            foreach (TSite site in agent.Prototype.IsSiteOriented ? orderedSites : notSiteOriented)
                             {
                                 at.Execute(agent, currentIteration[agent], site);
 

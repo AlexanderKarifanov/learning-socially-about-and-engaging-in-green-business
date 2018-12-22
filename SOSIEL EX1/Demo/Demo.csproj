@@ -6,13 +6,17 @@
 
 	  <Copyright>Copyright © Garry Sotnik 2018</Copyright>
     <Authors>Garry Sotnik</Authors>
-    <AssemblyVersion>2.0.1.6889</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <Version>2.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DebugType Condition=" '$(Configuration)' == 'Release' ">None</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

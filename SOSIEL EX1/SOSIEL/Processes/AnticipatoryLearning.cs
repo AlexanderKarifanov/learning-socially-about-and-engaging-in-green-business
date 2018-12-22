@@ -9,7 +9,7 @@ namespace SOSIEL.Processes
     /// <summary>
     /// Anticipatory learning process implementation.
     /// </summary>
-    public class AnticipatoryLearning : VolatileProcess
+    public class AnticipatoryLearning<TSite> : VolatileProcess
     {
         Goal currentGoal;
         GoalState currentGoalState;
@@ -109,10 +109,10 @@ namespace SOSIEL.Processes
         /// <param name="agent"></param>
         /// <param name="lastIteration"></param>
         /// <returns></returns>
-        public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState>> lastIteration)
+        public void Execute(IAgent agent, LinkedListNode<Dictionary<IAgent, AgentState<TSite>>> lastIteration)
         {
-            AgentState currentIterationAgentState = lastIteration.Value[agent];
-            AgentState previousIterationAgentState = lastIteration.Previous.Value[agent];
+            AgentState<TSite> currentIterationAgentState = lastIteration.Value[agent];
+            AgentState<TSite> previousIterationAgentState = lastIteration.Previous.Value[agent];
 
             foreach (var goal in agent.AssignedGoals)
             {
