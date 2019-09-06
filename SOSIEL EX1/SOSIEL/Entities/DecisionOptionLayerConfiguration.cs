@@ -12,6 +12,8 @@ namespace SOSIEL.Entities
 
         public int[] ConsequentValueInterval { get; set; }
 
+        public int ConsequentRound { get; set; }
+
         public Dictionary<string, string> ConsequentRelationshipSign { get; set; }
 
         public static ConsequentRelationship ConvertSign(string sign)
